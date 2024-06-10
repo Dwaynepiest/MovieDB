@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "genre": "Drama"
+    },
+    {
+        "id": 2,
+        "genre": "Unknown"
+    },
+    {
+        "id": 3,
+        "genre": "Comedy"
+    },
+    {
+        "id": 4,
+        "genre": "Documentary"
+    },
+    {
+        "id": 5,
+        "genre": "Game-Show"
+    },
+    {
+        "id": 6,
+        "genre": "Reality-TV"
+    }
+]
