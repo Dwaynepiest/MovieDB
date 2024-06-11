@@ -1,7 +1,7 @@
 .DS_Store
 node_modules
 /dist
-5e3a76b6.json
+.cache
 
 
 # local env files
