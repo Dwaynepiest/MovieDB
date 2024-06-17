@@ -1,4 +1,5 @@
-[
+{
+"genres":[
     {
         "id": 1,
         "genre": "Drama"
@@ -24,3 +25,5 @@
         "genre": "Reality-TV"
     }
 ]
+
+}
