@@ -1,31 +1,45 @@
-MovieDB-site voor ProStreamersÓ
+Welcome to MovieDB! 🎥
 
-Wij van “ProStreamers”, willen een nieuwe website ontwikkelen waarop vele films op te vinden zijn en te streamen zijn. Een gebruiker moet kunnen inloggen en op een gebruikersvriendelijke manier met verschillende zoekopties, een movie kunnen vinden en afspelen. Rechten op de Movies moeten nog geregeld worden. Aan jullie de opdracht om op basis van de data die aangeleverd wordt, een responsive website te ontwikkelen die dat mogelijk maakt.
+Get ready to dive into the world of movies! 📽️
+ℹ️ Overview
 
-Groepssamenstelling wordt maandag 10 juni bepaald.
+MovieDB is a project that allows you to explore and discover new movies. Whether you're a movie buff or just looking for something new to watch, MovieDB has got you covered.
 
-Kies met je team welke script-talen je daarvoor wil gebruiken. Een logische keuze zou zijn om volledig in Laravel te werken, of Laravel alleen als API, Vue (via CDN of cli) of NodeJS als API, omdat jullie die allemaal in basis kennen. De keuze van de script-talen wordt ook nog per team besproken.
+Highlights 🌟
 
-Jij en je team leveren het product, op donderdag 4 juli, in Deltion op. De uitnodiging daarvoor staat al in je Deltion-agenda.
+  Explore movies and Browse trough categories 
+    
 
-Met dit oplevering worden er gelet op:
+Getting Started 🚀
 
-· Groepswerk (actieve deelname) (2)
+To run this project, follow these steps:
+1. Clone the repository
+```bash
+git clone https://github.com/Dwaynepiest/MovieDB
+```
 
-· Werkend Product (4)
+Pull the project repository to your local machine.
+2. Change into the project directory
 
-· GitHub gebruik (1)
+Navigate into the MovieDB directory:
+```bash
+cd MovieDB
+```
 
-· Codereview (1)
+3. Install dependencies
 
-· Presentatie (1)
+Install the required dependencies using npm:
+```bash
+npm install
+```
 
-De getallen erachter geven de weging aan.
+4. Start the development server
 
-De klant ProStreamersÓ zijn de SD docenten, je levert het product aan hen op
+Finally, start the development server:
+```bash
+npm run dev
+```
 
-Link naar de projectomschrijving in Lucy: https://deltionict.github.io/lucy/subjects/projecten/project-movies/
+Invite users to give feedback and contribute 💭
 
-Tutorial Laravel Breeze (gericht op applicatie volledig in Laravel): https://www.edutorial.nl/laravel/views/
-
-Tutorial Laravel API : https://www.edutorial.nl/laravel_api/models/ 
+If you found this guide insightful or have suggestions, please start a Discussion! 💬
