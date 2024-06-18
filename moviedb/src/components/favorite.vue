@@ -2,5 +2,5 @@
   
 </script>
 <template>
-favorite
+favorite2
 </template>

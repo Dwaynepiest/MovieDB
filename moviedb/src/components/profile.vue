@@ -2,5 +2,5 @@
 
 </script>
 <template>
-profile
+profile2
 </template>

@@ -3,5 +3,5 @@
 </script>
 
 <template>
-search
+search2
 </template>

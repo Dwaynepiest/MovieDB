@@ -2,5 +2,5 @@
 
 </script>
 <template>
-settings
+settings2
 </template>
