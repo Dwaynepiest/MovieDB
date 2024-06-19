@@ -130,7 +130,7 @@ const filterMoviesByGenre = (genre) => {
   margin-right: 2%;
   margin-bottom: 20px;
   border-radius: 25px;
-  background-color: #f1f1f1;
+  background-color: rgba(23, 23, 23, 0.5);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: inline-block;
   vertical-align: top;
@@ -156,13 +156,14 @@ const filterMoviesByGenre = (genre) => {
   height: 100%; 
   padding: 10px;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .card-title {
   font-size: 18px;
   margin: 0;
   color: white;
+  font-family: 'Jockey One', sans-serif;
 }
 
 .scroll-container {
@@ -180,5 +181,11 @@ const filterMoviesByGenre = (genre) => {
   margin-bottom: 0px;
   width: fit-content;
   padding-left: 3%;
+}
+
+h2 {
+  font-family: 'Jockey One', sans-serif;
+  margin-bottom: 0;
+  font-size: 30px;
 }
 </style>
