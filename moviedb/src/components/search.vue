@@ -1,6 +1,5 @@
 <script setup>
-// Importing `ref` and `onMounted` from Vue to create reactive state and execute code when the component is mounted.
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
 const genresData = [
     { "id": 1, "genre": "Action" },
@@ -36,66 +35,61 @@ const moviesData = [
     { "id": "235548", "genre": "Fantasy", "title": "Dragon's Quest", "year": "2017", "minutes": "115" }
 ];
 
-// Create reactive variables to hold the movie types, genres, and movies.
-const genres = ref([]);
-const movies = ref([]);
+// Reactive variables to store genres and movies
+const genres = ref([]);  // Stores the list of genres
+const movies = ref([]);  // Stores the list of movies
+const searchQuery = ref('');  // Reactive variable to store the search query
 
-// When the component is mounted, assign the jsonData and genresData to the reactive variables.
+// Lifecycle hook to initialize genres and movies data on component mount
 onMounted(() => {
     genres.value = genresData;
     movies.value = moviesData;
 });
 
-// Function to get the image URL based on the genre type.
+// Function to generate the image URL based on the movie title
 const getImageUrl = (type) => `img/${type.toLowerCase()}.jpg`;
 
-// Function to filter movies by genre.
-const filterMoviesByGenre = (genre) => {
-    return movies.value.filter(movie => movie.genre === genre);
-};
+// Computed property to filter movies based on the search query
+const filteredMovies = computed(() => {
+    // Filter movies whose title includes the search query (case-insensitive)
+    return movies.value.filter(movie => movie.title && movie.title.toLowerCase().includes(searchQuery.value.toLowerCase()));
+});
 </script>
 
 <template>
-  <!-- Loop through each genre and create a separate scroll container for each -->
-  <div v-for="genre in genres" :key="genre.id">
-      <!-- Container for the genre title -->
-      <div>
-          <h2>{{ genre.genre }}</h2>
-      </div>
-      <!-- Main container for the movies cards, styled as a scroll container -->
-      <div class="scroll-container">
-          <!-- Loop through each movie that belongs to the current genre and create a card for each one -->
-          <div v-for="movie in filterMoviesByGenre(genre.genre)" :key="movie.id" class="card" 
-               :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }">
-              <!-- Overlay div to add a dark layer over the background image -->
-              <div class="overlay"></div>
-              <!-- Content container for the card -->
-              <div class="card-content">
-                  <!-- Display the movie title as the card title -->
-                  <h2 class="card-title">{{ movie.title }}</h2>
-              </div>
-          </div>
-      </div>
-  </div>
+    <!-- Search Input -->
+    <div>
+        <!-- Two-way data binding for the search input -->
+        <input v-model="searchQuery" placeholder="Search for movies...">
+    </div>
+  
+    <!-- Loop through each filtered movie and create a card for each one -->
+    <div v-for="movie in filteredMovies" :key="movie.id" class="card-container">
+        <!-- Card component for each movie -->
+        <div class="card" 
+             :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }"> <!-- Set background image -->
+            <div class="overlay"></div>
+            <div class="card-content">
+                <!-- Display the movie title -->
+                <h2 class="card-title">{{ movie.title }}</h2>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style scoped>
-.scroll-container {
-  overflow-x: auto;
-  white-space: nowrap; 
-  padding: 20px;
+.card-container {
+  display: inline-block;
+  margin-right: 20px;
+  margin-bottom: 20px;
 }
 
 .card {
-  position: relative;
-  width: 45%;
-  max-width: 250px;
+  width: 250px;
   height: 15vh;
   max-height: 500px;
-  margin-right: 2%;
-  margin-bottom: 20px;
   border-radius: 25px;
-  background-color: rgba(23, 23, 23, 0.5);
+  background-color: rgb(23 23 23 / 84%);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: inline-block;
   vertical-align: top;
@@ -104,12 +98,12 @@ const filterMoviesByGenre = (genre) => {
 }
 
 .overlay {
-  position: absolute;
+  /* position: absolute; */
   border-radius: 25px;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   background-color: rgba(0, 0, 0, 0.5);
 }
 
@@ -129,28 +123,5 @@ const filterMoviesByGenre = (genre) => {
   margin: 0;
   color: white;
   font-family: 'Jockey One', sans-serif;
-}
-
-.scroll-container {
-  overflow-x: scroll;  
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
-  width: 1824px;
-}
-
-.scroll-container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
-}
-
-#scroll-title {
-  margin-bottom: 0px;
-  width: fit-content;
-  padding-left: 3%;
-}
-
-h2 {
-  font-family: 'Jockey One', sans-serif;
-  margin-bottom: 0;
-  font-size: 30px;
 }
 </style>
