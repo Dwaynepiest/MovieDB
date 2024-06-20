@@ -32,7 +32,7 @@
 }
 
 .footer {
-    background-color: rgb(32, 32, 32, 0.65 );
+    background-color: rgba(0, 0, 0, 0.7);
     position: fixed;
     bottom: 0;
     width: 100%;
