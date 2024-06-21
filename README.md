@@ -43,3 +43,4 @@ npm run dev
 Invite users to give feedback and contribute 💭
 
 If you found this guide insightful or have suggestions, please start a Discussion! 💬
+design: https://www.figma.com/design/BFbwKfiWHIsDBx18nhSXkf/MovieDB?node-id=0-1&t=nqXCojqhB3AgwuCL-1

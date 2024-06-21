@@ -1,0 +1,112 @@
+{
+    "all_movies": [
+		  {
+			"id": "375282",
+			"movie_type": "1",
+			"title": "La comadre",
+			"year": "1981",
+			"minutes": "45"
+		  },
+		  {
+			"id": "375284",
+			"movie_type": "1",
+			"title": "Comer es un placer",
+			"year": "1986",
+			"minutes": "120"
+		  },  
+		  {
+			"id": "375289",
+			"movie_type": "1",
+			"title": "Computer control alt delete",
+			"year": "1994",
+			"minutes": "50"
+		  }
+
+		],
+
+    "genres":[
+        {
+            "id": 1,
+            "genre": "Drama"
+        },
+        {
+            "id": 2,
+            "genre": "Unknown"
+        },
+        {
+            "id": 3,
+            "genre": "Comedy"
+        },
+        {
+            "id": 4,
+            "genre": "Documentary"
+        },
+        {
+            "id": 5,
+            "genre": "Game-Show"
+        },
+        {
+            "id": 6,
+            "genre": "Reality-TV"
+        }
+    ],
+"by_movie_id": [
+	{
+	"id": "375282",
+	"movie_type": "1",
+	"title": "La comadre",
+	"year": "1981",
+	"minutes": "45"
+	}
+],
+
+"movie_tv_serie": [
+    {
+      "id": "375282",
+      "movie_type": "1",
+      "title": "La comadre",
+      "year": "1981",
+      "minutes": "45"
+    },
+    {
+      "id": "375284",
+      "movie_type": "1",
+      "title": "Comer es un placer",
+      "year": "1986",
+      "minutes": "120"
+    },  
+    {
+      "id": "375289",
+      "movie_type": "1",
+      "title": "Computer control alt delete",
+      "year": "1994",
+      "minutes": "50"
+    }
+  ],
+
+  "koos_stadion_movies": [
+	  {
+		"id": "375282",
+		"movie_type": "1",
+		"title": "La comadre",
+		"year": "1981",
+		"minutes": "45"
+	  },
+	  {
+		"id": "375284",
+		"movie_type": "1",
+		"title": "Comer es un placer",
+		"year": "1986",
+		"minutes": "120"
+	  },  
+	  {
+		"id": "375289",
+		"movie_type": "1",
+		"title": "Computer control alt delete",
+		"year": "1994",
+		"minutes": "50"
+	  }
+	]
+    
+
+}
