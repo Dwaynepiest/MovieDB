@@ -32,7 +32,16 @@ const moviesData = [
     { "id": "152857", "genre": "Romance", "title": "Eternal Love", "year": "2019", "minutes": "110" },
     { "id": "175486", "genre": "Thriller", "title": "Silent Killer", "year": "2020", "minutes": "100" },
     { "id": "875210", "genre": "Horror", "title": "Ghost Mansion", "year": "2023", "minutes": "85" },
-    { "id": "235548", "genre": "Fantasy", "title": "Dragon's Quest", "year": "2017", "minutes": "115" }
+    { "id": "235548", "genre": "Fantasy", "title": "Dragon's Quest", "year": "2017", "minutes": "115" },
+    { "id": "235549", "genre": "Action", "title": "Sky Warriors", "year": "2019", "minutes": "130" },
+    { "id": "235550", "genre": "Comedy", "title": "Laugh Factory", "year": "2020", "minutes": "90" },
+    { "id": "235551", "genre": "Drama", "title": "Heartstrings", "year": "2018", "minutes": "105" },
+    { "id": "235552", "genre": "Sci-Fi", "title": "Galactic Odyssey", "year": "2021", "minutes": "140" },
+    { "id": "235553", "genre": "Horror", "title": "Night Terrors", "year": "2016", "minutes": "95" },
+    { "id": "235554", "genre": "Romance", "title": "Love in Paris", "year": "2015", "minutes": "110" },
+    { "id": "235555", "genre": "Thriller", "title": "Edge of Darkness", "year": "2019", "minutes": "125" },
+    { "id": "235556", "genre": "Animation", "title": "Pixie Adventures", "year": "2022", "minutes": "85" },
+    { "id": "235557", "genre": "Mystery", "title": "Whispering Shadows", "year": "2017", "minutes": "100" }
 ];
 
 // Reactive variables to store genres and movies
@@ -60,24 +69,45 @@ const filteredMovies = computed(() => {
     <!-- Search Input -->
     <div>
         <!-- Two-way data binding for the search input -->
-        <input v-model="searchQuery" placeholder="Search for movies...">
+        <input v-model="searchQuery" placeholder="Search for movies..." class="search-input">
     </div>
-  
-    <!-- Loop through each filtered movie and create a card for each one -->
-    <div v-for="movie in filteredMovies" :key="movie.id" class="card-container">
-        <!-- Card component for each movie -->
-        <div class="card" 
-             :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }"> <!-- Set background image -->
-            <div class="overlay"></div>
-            <div class="card-content">
-                <!-- Display the movie title -->
-                <h2 class="card-title">{{ movie.title }}</h2>
-            </div>
-        </div>
+
+    <div class="container">
+      <div class="content">
+          <!-- Loop through each filtered movie and create a card for each one -->
+          <div v-for="movie in filteredMovies" :key="movie.id" class="card-container">
+              <!-- Card component for each movie -->
+              <div class="card" 
+                  :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }"> <!-- Set background image -->
+                  <div class="overlay"></div>
+                  <div class="card-content">
+                      <!-- Display the movie title -->
+                      <h2 class="card-title">{{ movie.title }}</h2>
+                  </div>
+              </div>
+          </div>
+      </div>
     </div>
 </template>
 
 <style scoped>
+.container {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.content {
+  width: 100%;
+  padding-left: 5%;
+}
+
 .card-container {
   display: inline-block;
   margin-right: 20px;
@@ -124,4 +154,12 @@ const filteredMovies = computed(() => {
   color: white;
   font-family: 'Jockey One', sans-serif;
 }
+
+.search-input {
+  width: 400px;
+  height: 30px;
+  border-radius: 25px;
+  margin: 10px;
+  padding: 0px 6px;
+  }
 </style>

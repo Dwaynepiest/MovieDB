@@ -71,46 +71,50 @@ const filterMoviesByGenre = (genre) => {
 </script>
 
 <template>
-  <!-- Container for the scroll title -->
-  <div>
-      <h2>Type</h2>
-  </div>
-  <!-- Main container for the movie type cards, styled as a scroll container -->
-  <div class="scroll-container">
-      <!-- Loop through each item in the movieTypes array and create a card for each one -->
-      <div v-for="type in movieTypes" :key="type.id" class="card" 
-           :style="{ backgroundImage: `url('${getImageUrl(type.movie_type)}')` }">
-          <!-- Overlay div to add a dark layer over the background image -->
-          <div class="overlay"></div>
-          <!-- Content container for the card -->
-          <div class="card-content">
-              <!-- Display the movie type as the card title -->
-              <h2 class="card-title">{{ type.movie_type }}</h2>
-          </div>
-      </div>
-  </div>
+    <div class="container">
+      <div class="content">
+        <!-- Container for the scroll title -->
+        <div>
+            <h2>Type</h2>
+        </div>
+        <!-- Main container for the movie type cards, styled as a scroll container -->
+        <div class="scroll-container">
+            <!-- Loop through each item in the movieTypes array and create a card for each one -->
+            <div v-for="type in movieTypes" :key="type.id" class="card" 
+                :style="{ backgroundImage: `url('${getImageUrl(type.movie_type)}')` }">
+                <!-- Overlay div to add a dark layer over the background image -->
+                <div class="overlay"></div>
+                <!-- Content container for the card -->
+                <div class="card-content">
+                    <!-- Display the movie type as the card title -->
+                    <h2 class="card-title">{{ type.movie_type }}</h2>
+                </div>
+            </div>
+        </div>
 
-  <!-- Loop through each genre and create a separate scroll container for each -->
-  <div v-for="genre in genres" :key="genre.id">
-      <!-- Container for the genre title -->
-      <div>
-          <h2>{{ genre.genre }}</h2>
-      </div>
-      <!-- Main container for the movies cards, styled as a scroll container -->
-      <div class="scroll-container">
-          <!-- Loop through each movie that belongs to the current genre and create a card for each one -->
-          <div v-for="movie in filterMoviesByGenre(genre.genre)" :key="movie.id" class="card" 
-               :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }">
-              <!-- Overlay div to add a dark layer over the background image -->
-              <div class="overlay"></div>
-              <!-- Content container for the card -->
-              <div class="card-content">
-                  <!-- Display the movie title as the card title -->
-                  <h2 class="card-title">{{ movie.title }}</h2>
-              </div>
-          </div>
-      </div>
-  </div>
+        <!-- Loop through each genre and create a separate scroll container for each -->
+        <div v-for="genre in genres" :key="genre.id">
+            <!-- Container for the genre title -->
+            <div>
+                <h2>{{ genre.genre }}</h2>
+            </div>
+            <!-- Main container for the movies cards, styled as a scroll container -->
+            <div class="scroll-container">
+                <!-- Loop through each movie that belongs to the current genre and create a card for each one -->
+                <div v-for="movie in filterMoviesByGenre(genre.genre)" :key="movie.id" class="card" 
+                    :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }">
+                    <!-- Overlay div to add a dark layer over the background image -->
+                    <div class="overlay"></div>
+                    <!-- Content container for the card -->
+                    <div class="card-content">
+                        <!-- Display the movie title as the card title -->
+                        <h2 class="card-title">{{ movie.title }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>x
+    </div>
 </template>
 
 
@@ -187,5 +191,21 @@ h2 {
   font-family: 'Jockey One', sans-serif;
   margin-bottom: 0;
   font-size: 30px;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.content {
+  width: 100%;
 }
 </style>
