@@ -82,3 +82,13 @@ app.get('/users', async (req, res) => {
 app.listen(3000, () => {
   console.log('Server running on port 3000');
 });
+
+app.post('/movie_post', async (req, res) => {
+  try {
+    const { title, year, minutes } = req.body;
+    const movie = await db.movie.create({ title, year, minutes });
+    res.status(201).json(movie);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
