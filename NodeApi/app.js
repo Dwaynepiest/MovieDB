@@ -94,10 +94,3 @@ app.post('/movie/post', async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-
-=======
-app.listen(3000, () => { console.log('Server running on (http://localhost:3000)'); }); 
-
-app.use(cors());
->>>>>>> c3a2215a9cc0c7b179c6e56faf44bdce2ed30d6b
