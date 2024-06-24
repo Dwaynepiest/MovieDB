@@ -113,7 +113,7 @@ const filterMoviesByGenre = (genre) => {
                 </div>
             </div>
         </div>
-      </div>x
+      </div>
     </div>
 </template>
 
@@ -122,7 +122,7 @@ const filterMoviesByGenre = (genre) => {
 .scroll-container {
   overflow-x: auto;
   white-space: nowrap; 
-  padding: 20px;
+  padding: 10px;
 }
 
 .card {
@@ -140,6 +140,12 @@ const filterMoviesByGenre = (genre) => {
   vertical-align: top;
   background-size: cover;
   background-position: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add transitions */
+}
+
+.card:hover {
+  transform: scale(1.05); /* Scale up the card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Enhance the shadow effect */
 }
 
 .overlay {
@@ -150,14 +156,19 @@ const filterMoviesByGenre = (genre) => {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  transition: background-color 0.3s ease; /* Add transition for the overlay */
+}
+
+.card:hover .overlay {
+  background-color: rgba(0, 0, 0, 0.7); /* Darken the overlay on hover */
 }
 
 .card-content {
   display: flex;
   flex-direction: column;
-  justify-content: center; 
-  align-items: center; 
-  height: 100%; 
+  justify-content: center;
+  align-items: center;
+  height: 100%;
   padding: 10px;
   position: relative;
   z-index: 2;
@@ -169,6 +180,7 @@ const filterMoviesByGenre = (genre) => {
   color: white;
   font-family: 'Jockey One', sans-serif;
 }
+
 
 .scroll-container {
   overflow-x: scroll;  
@@ -189,7 +201,7 @@ const filterMoviesByGenre = (genre) => {
 
 h2 {
   font-family: 'Jockey One', sans-serif;
-  margin-bottom: 0;
+  margin: 0px 5px;
   font-size: 30px;
 }
 
@@ -197,7 +209,7 @@ h2 {
   position: relative;
   z-index: 1;
   height: 100vh;
-  width: 100%;
+  width: 202vh;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
@@ -206,6 +218,7 @@ h2 {
 }
 
 .content {
-  width: 100%;
+  width: 202vh;
+  padding: 0% 5% 4% 5%;
 }
 </style>
