@@ -1,5 +1,6 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
+const cors = require('cors');
 
 const app = express();
 app.use(express.json());
@@ -94,3 +95,5 @@ app.post('/movie/post', async (req, res) => {
 });
 
 app.listen(3000, () => { console.log('Server running on (http://localhost:3000)'); }); 
+
+app.use(cors());
