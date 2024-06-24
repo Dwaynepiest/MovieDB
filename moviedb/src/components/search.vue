@@ -43,6 +43,7 @@ const moviesData = [
     { "id": "235556", "genre": "Animation", "title": "Pixie Adventures", "year": "2022", "minutes": "85" },
     { "id": "235557", "genre": "Mystery", "title": "Whispering Shadows", "year": "2017", "minutes": "100" }
 ];
+// const moviesData = "http://localhost:3000/movies";
 
 // Reactive variables to store genres and movies
 const genres = ref([]);  // Stores the list of genres
@@ -148,6 +149,12 @@ const closeFilter = () => {
   vertical-align: top;
   background-size: cover;
   background-position: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .overlay {
@@ -156,6 +163,11 @@ const closeFilter = () => {
   left: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  transition: background-color 0.3s ease;
+}
+
+.card:hover .overlay {
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .card-content {

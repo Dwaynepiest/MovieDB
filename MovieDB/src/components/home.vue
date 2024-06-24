@@ -140,12 +140,12 @@ const filterMoviesByGenre = (genre) => {
   vertical-align: top;
   background-size: cover;
   background-position: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add transitions */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
-  transform: scale(1.05); /* Scale up the card */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Enhance the shadow effect */
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .overlay {
@@ -156,11 +156,11 @@ const filterMoviesByGenre = (genre) => {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  transition: background-color 0.3s ease; /* Add transition for the overlay */
+  transition: background-color 0.3s ease;
 }
 
 .card:hover .overlay {
-  background-color: rgba(0, 0, 0, 0.7); /* Darken the overlay on hover */
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .card-content {
