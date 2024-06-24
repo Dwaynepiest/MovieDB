@@ -4,6 +4,7 @@ import App from './App.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
 
+
 import Home from './components/home.vue';
 import Favorite from './components/favorite.vue'
 import Search from './components/search.vue'
@@ -18,6 +19,7 @@ const router = createRouter({
     { path: '/favorite', component: Favorite },
     { path: '/search', component: Search },
     { path: '/settings', component: Settings },
+
     { path: '/profile', component: Profile },
   ]
 })
