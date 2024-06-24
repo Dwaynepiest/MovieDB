@@ -93,22 +93,4 @@ app.post('/movie/post', async (req, res) => {
   }
 });
 
-app.delete('/movie/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const sql = 'DELETE FROM movies WHERE id = ?';
-    const [result] = await db.execute(sql, [id]);
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Movie not found' });
-    }
-
-    res.status(200).json({ message: 'Movie deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.listen(3000, () => {
-  console.log('Server running on (http://localhost:3000)');
-});
