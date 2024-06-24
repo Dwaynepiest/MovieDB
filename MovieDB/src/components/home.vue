@@ -1,19 +1,7 @@
 <script setup>
-// Importing `ref` and `onMounted` from Vue to create reactive state and execute code when the component is mounted.
 import { ref, onMounted } from 'vue';
 
-// Sample data containing different types of movies.
-const jsonData = [
-    { "id": 1, "movie_type": "TV MiniSeries" },
-    { "id": 2, "movie_type": "TV Series" },
-    { "id": 3, "movie_type": "Movie" },
-    { "id": 4, "movie_type": "Short" },
-    { "id": 5, "movie_type": "TV Movie" },
-    { "id": 6, "movie_type": "TV Episode" },
-    { "id": 7, "movie_type": "TV Special" },
-    { "id": 8, "movie_type": "Video" },
-    { "id": 9, "movie_type": "Videogame" }
-];
+const movieTypesApiUrl = "http://localhost:3000/movie-types";
 
 const genresData = [
     { "id": 1, "genre": "Action" },
@@ -49,26 +37,39 @@ const moviesData = [
     { "id": "235548", "genre": "Fantasy", "title": "Dragon's Quest", "year": "2017", "minutes": "115" }
 ];
 
-// Create reactive variables to hold the movie types, genres, and movies.
 const movieTypes = ref([]);
 const genres = ref([]);
 const movies = ref([]);
 
-// When the component is mounted, assign the jsonData and genresData to the reactive variables.
-onMounted(() => {
-    movieTypes.value = jsonData;
+onMounted(async () => {
+    try {
+        const response = await fetch(movieTypesApiUrl);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        movieTypes.value = data;
+    } catch (error) {
+        console.error('Error fetching movie types:', error);
+        // Add more specific handling based on the error type
+        if (error instanceof TypeError && error.message === 'Failed to fetch') {
+            // Handle specific error case, e.g., show a message to the user
+        } else {
+            // Handle other types of errors, e.g., show a generic error message
+        }
+    }
     genres.value = genresData;
     movies.value = moviesData;
 });
 
-// Function to get the image URL based on the genre type.
-const getImageUrl = (type) => `img/${type.toLowerCase()}.jpg`;
 
-// Function to filter movies by genre.
+const getImageUrl = (type) => `img/${type.toLowerCase().replace(/ /g, '_')}.jpg`;
+
 const filterMoviesByGenre = (genre) => {
     return movies.value.filter(movie => movie.genre === genre);
 };
 </script>
+
 
 <template>
     <div class="container">
@@ -116,7 +117,6 @@ const filterMoviesByGenre = (genre) => {
       </div>
     </div>
 </template>
-
 
 <style scoped>
 .scroll-container {
