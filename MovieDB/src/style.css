@@ -39,7 +39,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 320px;
+  min-width: 200vh;
   min-height: 100vh;
   background: radial-gradient(circle, rgba(250,93,5,1) 0%, rgba(164,127,85,1) 37%, rgba(108,104,104,1) 65%, rgba(68,65,65,1) 95%);
   position: relative;
@@ -49,10 +49,10 @@ body {
 
 body::before {
   content: "";
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 200vh;
   height: 100%;
   background: url('../MovieDB-logo.png') center/cover no-repeat;
   filter: blur(8px);
@@ -61,10 +61,10 @@ body::before {
 
 body::after {
   content: "";
-  position: absolute;
+  /* position: fixed; */
   top: 0;
   left: 0;
-  width: 100%;
+  width: 200vh;
   height: 100%;
   background: rgba(0, 0, 0, 0.3);
   z-index: -1;

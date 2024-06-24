@@ -48,6 +48,8 @@ const moviesData = [
 const genres = ref([]);  // Stores the list of genres
 const movies = ref([]);  // Stores the list of movies
 const searchQuery = ref('');  // Reactive variable to store the search query
+const filterVisible = ref(false);  // Reactive variable to toggle filter visibility
+const selectedGenre = ref('');  // Reactive variable to store the selected genre
 
 // Lifecycle hook to initialize genres and movies data on component mount
 onMounted(() => {
@@ -58,30 +60,50 @@ onMounted(() => {
 // Function to generate the image URL based on the movie title
 const getImageUrl = (type) => `img/${type.toLowerCase()}.jpg`;
 
-// Computed property to filter movies based on the search query
+// Computed property to filter movies based on the search query and selected genre
 const filteredMovies = computed(() => {
-    // Filter movies whose title includes the search query (case-insensitive)
-    return movies.value.filter(movie => movie.title && movie.title.toLowerCase().includes(searchQuery.value.toLowerCase()));
+    return movies.value.filter(movie => {
+        const matchesSearchQuery = movie.title && movie.title.toLowerCase().includes(searchQuery.value.toLowerCase());
+        const matchesGenre = selectedGenre.value === '' || movie.genre === selectedGenre.value;
+        return matchesSearchQuery && matchesGenre;
+    });
 });
+
+// Function to toggle filter visibility
+const toggleFilter = () => {
+    filterVisible.value = !filterVisible.value;
+};
+
+// Function to close filter div
+const closeFilter = () => {
+    filterVisible.value = false;
+};
 </script>
 
 <template>
     <!-- Search Input -->
     <div>
-        <!-- Two-way data binding for the search input -->
         <input v-model="searchQuery" placeholder="Search for movies..." class="search-input">
+        <button @click="toggleFilter">Filters</button>
+    </div>
+
+    <!-- Filter Div -->
+    <div v-if="filterVisible" class="filter-container">
+        <h3>Filter by Genre</h3>
+        <select v-model="selectedGenre">
+            <option value="">All</option>
+            <option v-for="genre in genres" :key="genre.id" :value="genre.genre">{{ genre.genre }}</option>
+        </select>
+        <button @click="closeFilter">Close</button>
     </div>
 
     <div class="container">
       <div class="content">
           <!-- Loop through each filtered movie and create a card for each one -->
           <div v-for="movie in filteredMovies" :key="movie.id" class="card-container">
-              <!-- Card component for each movie -->
-              <div class="card" 
-                  :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }"> <!-- Set background image -->
+              <div class="card" :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }">
                   <div class="overlay"></div>
                   <div class="card-content">
-                      <!-- Display the movie title -->
                       <h2 class="card-title">{{ movie.title }}</h2>
                   </div>
               </div>
@@ -95,7 +117,7 @@ const filteredMovies = computed(() => {
   position: relative;
   z-index: 1;
   height: 100vh;
-  width: 100%;
+  width: 202vh;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
@@ -104,8 +126,9 @@ const filteredMovies = computed(() => {
 }
 
 .content {
-  width: 100%;
+  width: 202vh;
   padding-left: 5%;
+  padding-bottom: 6%;
 }
 
 .card-container {
@@ -128,12 +151,10 @@ const filteredMovies = computed(() => {
 }
 
 .overlay {
-  /* position: absolute; */
   border-radius: 25px;
   top: 0;
   left: 0;
   width: 100%;
-  /* height: 100%; */
   background-color: rgba(0, 0, 0, 0.5);
 }
 
@@ -161,5 +182,27 @@ const filteredMovies = computed(() => {
   border-radius: 25px;
   margin: 10px;
   padding: 0px 6px;
-  }
+}
+
+.filter-container {
+  margin: 10px 0;
+  background-color: rgb(23 23 23 / 84%);
+  width: 500px;
+  padding: 10px;
+  border-radius: 20px;
+  position: absolute;
+  z-index: 900;
+}
+
+.filter-container h3 {
+  margin: 0 0 10px;
+}
+
+.filter-container select {
+  width: 400px;
+  height: 30px;
+  border-radius: 25px;
+  margin: 10px;
+  padding: 0px 6px;
+}
 </style>
