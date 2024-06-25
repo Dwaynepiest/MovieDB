@@ -117,13 +117,18 @@ const closeFilter = () => {
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
 .content {
   width: 202vh;
-  padding-left: 5%;
-  padding-bottom: 6%;
+  padding: 1.5% 0% 5% 6%;
 }
+.container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
 
 .card-container {
   display: inline-block;

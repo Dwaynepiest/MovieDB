@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 
 const movieTypesApiUrl = "http://localhost:3000/movie-types";
+const movieGenreApiUrl = "http://localhost:3000/genres";
 
 const genresData = [
     { "id": 1, "genre": "Action" },
@@ -38,6 +39,7 @@ const moviesData = [
 ];
 
 const movieTypes = ref([]);
+const movieGenres = ref([]);
 const genres = ref([]);
 const movies = ref([]);
 
@@ -49,6 +51,22 @@ onMounted(async () => {
         }
         const data = await response.json();
         movieTypes.value = data;
+    } catch (error) {
+        console.error('Error fetching movie types:', error);
+        // Add more specific handling based on the error type
+        if (error instanceof TypeError && error.message === 'Failed to fetch') {
+            // Handle specific error case, e.g., show a message to the user
+        } else {
+            // Handle other types of errors, e.g., show a generic error message
+        }
+    }
+    try {
+        const response = await fetch(movieGenreApiUrl);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        movieGenres.value = data;
     } catch (error) {
         console.error('Error fetching movie types:', error);
         // Add more specific handling based on the error type
@@ -76,7 +94,7 @@ const filterMoviesByGenre = (genre) => {
       <div class="content">
         <!-- Container for the scroll title -->
         <div>
-            <h2>Type</h2>
+            <h2>Movie Types</h2>
         </div>
         <!-- Main container for the movie type cards, styled as a scroll container -->
         <div class="scroll-container">
@@ -89,6 +107,24 @@ const filterMoviesByGenre = (genre) => {
                 <div class="card-content">
                     <!-- Display the movie type as the card title -->
                     <h2 class="card-title">{{ type.movie_type }}</h2>
+                </div>
+            </div>
+        </div>
+        <!-- Container for the scroll title -->
+        <div>
+            <h2>Movie Genres</h2>
+        </div>
+        <!-- Main container for the movie type cards, styled as a scroll container -->
+        <div class="scroll-container">
+            <!-- Loop through each item in the movieTypes array and create a card for each one -->
+            <div v-for="type in movieGenres" :key="type.id" class="card" 
+                :style="{ backgroundImage: `url('${getImageUrl(type.genre)}')` }">
+                <!-- Overlay div to add a dark layer over the background image -->
+                <div class="overlay"></div>
+                <!-- Content container for the card -->
+                <div class="card-content">
+                    <!-- Display the movie type as the card title -->
+                    <h2 class="card-title">{{ type.genre }}</h2>
                 </div>
             </div>
         </div>
@@ -192,6 +228,7 @@ const filterMoviesByGenre = (genre) => {
 .scroll-container::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
+
 
 #scroll-title {
   margin-bottom: 0px;
