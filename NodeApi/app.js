@@ -36,8 +36,7 @@ app.get('/', (req, res) => {
       <h1>Welcome to the MovieDB API</h1>
       <p>This is the home page. Here are the available API links:</p>
       <ul>
-        <li><a href="/movies">/movies</a></li>
-        <li><a href="/users">/users</a></li>
+        
         <li><a href="/genres">/genres</a></li>
         <li><a href="/movie-types">/movie-types</a></li>
         <li><a href="/movie-genres">/movie-genres</a></li>
