@@ -1,19 +1,8 @@
 <script setup>
-// Importing `ref` and `onMounted` from Vue to create reactive state and execute code when the component is mounted.
 import { ref, onMounted } from 'vue';
 
-// Sample data containing different types of movies.
-const jsonData = [
-    { "id": 1, "movie_type": "TV MiniSeries" },
-    { "id": 2, "movie_type": "TV Series" },
-    { "id": 3, "movie_type": "Movie" },
-    { "id": 4, "movie_type": "Short" },
-    { "id": 5, "movie_type": "TV Movie" },
-    { "id": 6, "movie_type": "TV Episode" },
-    { "id": 7, "movie_type": "TV Special" },
-    { "id": 8, "movie_type": "Video" },
-    { "id": 9, "movie_type": "Videogame" }
-];
+const movieTypesApiUrl = "http://localhost:3000/movie-types";
+const movieGenreApiUrl = "http://localhost:3000/genres";
 
 const genresData = [
     { "id": 1, "genre": "Action" },
@@ -49,33 +38,63 @@ const moviesData = [
     { "id": "235548", "genre": "Fantasy", "title": "Dragon's Quest", "year": "2017", "minutes": "115" }
 ];
 
-// Create reactive variables to hold the movie types, genres, and movies.
 const movieTypes = ref([]);
+const movieGenres = ref([]);
 const genres = ref([]);
 const movies = ref([]);
 
-// When the component is mounted, assign the jsonData and genresData to the reactive variables.
-onMounted(() => {
-    movieTypes.value = jsonData;
+onMounted(async () => {
+    try {
+        const response = await fetch(movieTypesApiUrl);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        movieTypes.value = data;
+    } catch (error) {
+        console.error('Error fetching movie types:', error);
+        // Add more specific handling based on the error type
+        if (error instanceof TypeError && error.message === 'Failed to fetch') {
+            // Handle specific error case, e.g., show a message to the user
+        } else {
+            // Handle other types of errors, e.g., show a generic error message
+        }
+    }
+    try {
+        const response = await fetch(movieGenreApiUrl);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        movieGenres.value = data;
+    } catch (error) {
+        console.error('Error fetching movie types:', error);
+        // Add more specific handling based on the error type
+        if (error instanceof TypeError && error.message === 'Failed to fetch') {
+            // Handle specific error case, e.g., show a message to the user
+        } else {
+            // Handle other types of errors, e.g., show a generic error message
+        }
+    }
     genres.value = genresData;
     movies.value = moviesData;
 });
 
-// Function to get the image URL based on the genre type.
-const getImageUrl = (type) => `img/${type.toLowerCase()}.jpg`;
 
-// Function to filter movies by genre.
+const getImageUrl = (type) => `img/${type.toLowerCase().replace(/ /g, '_')}.jpg`;
+
 const filterMoviesByGenre = (genre) => {
     return movies.value.filter(movie => movie.genre === genre);
 };
 </script>
+
 
 <template>
     <div class="container">
       <div class="content">
         <!-- Container for the scroll title -->
         <div>
-            <h2>Type</h2>
+            <h2>Movie Types</h2>
         </div>
         <!-- Main container for the movie type cards, styled as a scroll container -->
         <div class="scroll-container">
@@ -88,6 +107,24 @@ const filterMoviesByGenre = (genre) => {
                 <div class="card-content">
                     <!-- Display the movie type as the card title -->
                     <h2 class="card-title">{{ type.movie_type }}</h2>
+                </div>
+            </div>
+        </div>
+        <!-- Container for the scroll title -->
+        <div>
+            <h2>Movie Genres</h2>
+        </div>
+        <!-- Main container for the movie type cards, styled as a scroll container -->
+        <div class="scroll-container">
+            <!-- Loop through each item in the movieTypes array and create a card for each one -->
+            <div v-for="type in movieGenres" :key="type.id" class="card" 
+                :style="{ backgroundImage: `url('${getImageUrl(type.genre)}')` }">
+                <!-- Overlay div to add a dark layer over the background image -->
+                <div class="overlay"></div>
+                <!-- Content container for the card -->
+                <div class="card-content">
+                    <!-- Display the movie type as the card title -->
+                    <h2 class="card-title">{{ type.genre }}</h2>
                 </div>
             </div>
         </div>
@@ -117,7 +154,6 @@ const filterMoviesByGenre = (genre) => {
     </div>
 </template>
 
-
 <style scoped>
 .scroll-container {
   overflow-x: auto;
@@ -140,12 +176,12 @@ const filterMoviesByGenre = (genre) => {
   vertical-align: top;
   background-size: cover;
   background-position: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add transitions */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
-  transform: scale(1.05); /* Scale up the card */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Enhance the shadow effect */
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .overlay {
@@ -156,11 +192,11 @@ const filterMoviesByGenre = (genre) => {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  transition: background-color 0.3s ease; /* Add transition for the overlay */
+  transition: background-color 0.3s ease;
 }
 
 .card:hover .overlay {
-  background-color: rgba(0, 0, 0, 0.7); /* Darken the overlay on hover */
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .card-content {
@@ -192,6 +228,7 @@ const filterMoviesByGenre = (genre) => {
 .scroll-container::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
+
 
 #scroll-title {
   margin-bottom: 0px;
