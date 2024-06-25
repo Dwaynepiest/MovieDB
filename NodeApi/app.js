@@ -40,6 +40,7 @@ app.get('/', (req, res) => {
         <li><a href="/users">/users</a></li>
         <li><a href="/genres">/genres</a></li>
         <li><a href="/movie-types">/movie-types</a></li>
+        <li><a href="/movie-genres">/movie-genres</a></li>
       </ul>
     </body>
     </html>
@@ -79,6 +80,16 @@ app.get('/genres', async (req, res) => {
 app.get('/movie-types', async (req, res) => {
   try {
     const [rows, fields] = await db.execute('SELECT * FROM movie_types');
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching movie_types', error: err.message });
+  }
+});
+
+app.get('/movie-genres', async (req, res) => {
+  try {
+    const [rows, fields] = await db.execute('SELECT * FROM movie_genres');
     res.json(rows);
   } catch (err) {
     console.error(err);
