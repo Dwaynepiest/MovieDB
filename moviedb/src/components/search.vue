@@ -1,74 +1,66 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import axios from 'axios';
 
-const genresData = [
-    { "id": 1, "genre": "Action" },
-    { "id": 2, "genre": "Comedy" },
-    { "id": 3, "genre": "Drama" },
-    { "id": 4, "genre": "Horror" },
-    { "id": 5, "genre": "Sci-Fi" },
-    { "id": 6, "genre": "Romance" },
-    { "id": 7, "genre": "Thriller" },
-    { "id": 8, "genre": "Fantasy" },
-    { "id": 9, "genre": "Documentary" },
-    { "id": 10, "genre": "Theater" }
-];
+// Reactive variables to store genres, movies, and movie genres
+const genres = ref([]);
+const movies = ref([]);
+const movieGenres = ref([]);
+const searchQuery = ref('');
+const filterVisible = ref(false);
+const selectedGenre = ref('');
+const movieGenreMap = ref({});
 
-const moviesData = [
-    { "id": "375282", "genre": "Comedy", "title": "La comadre", "year": "1981", "minutes": "45" },
-    { "id": "375284", "genre": "Drama", "title": "Comer es un placer", "year": "1986", "minutes": "120" },
-    { "id": "375289", "genre": "Sci-Fi", "title": "Computer Control Alt Delete", "year": "1994", "minutes": "50" },
-    { "id": "218784", "genre": "Theater", "title": "Rite Here Rite Now", "year": "2024", "minutes": "145" },
-    { "id": "445745", "genre": "Action", "title": "The Great Adventure", "year": "2020", "minutes": "130" },
-    { "id": "514531", "genre": "Romance", "title": "Love in the Time of AI", "year": "2023", "minutes": "90" },
-    { "id": "781552", "genre": "Thriller", "title": "Mystery Chronicles", "year": "2019", "minutes": "60" },
-    { "id": "125487", "genre": "Documentary", "title": "The Art of Coding", "year": "2021", "minutes": "80" },
-    { "id": "325874", "genre": "Documentary", "title": "Nature Uncovered", "year": "2022", "minutes": "50" },
-    { "id": "125762", "genre": "Comedy", "title": "Christmas Extravaganza", "year": "2018", "minutes": "45" },
-    { "id": "044877", "genre": "Horror", "title": "Nightmare on Elm Street", "year": "1984", "minutes": "92" },
-    { "id": "377621", "genre": "Fantasy", "title": "The Magic Realm", "year": "2021", "minutes": "110" },
-    { "id": "515782", "genre": "Action", "title": "High Speed Chase", "year": "2022", "minutes": "95" },
-    { "id": "215522", "genre": "Sci-Fi", "title": "Future World", "year": "2018", "minutes": "120" },
-    { "id": "152857", "genre": "Romance", "title": "Eternal Love", "year": "2019", "minutes": "110" },
-    { "id": "175486", "genre": "Thriller", "title": "Silent Killer", "year": "2020", "minutes": "100" },
-    { "id": "875210", "genre": "Horror", "title": "Ghost Mansion", "year": "2023", "minutes": "85" },
-    { "id": "235548", "genre": "Fantasy", "title": "Dragon's Quest", "year": "2017", "minutes": "115" },
-    { "id": "235549", "genre": "Action", "title": "Sky Warriors", "year": "2019", "minutes": "130" },
-    { "id": "235550", "genre": "Comedy", "title": "Laugh Factory", "year": "2020", "minutes": "90" },
-    { "id": "235551", "genre": "Drama", "title": "Heartstrings", "year": "2018", "minutes": "105" },
-    { "id": "235552", "genre": "Sci-Fi", "title": "Galactic Odyssey", "year": "2021", "minutes": "140" },
-    { "id": "235553", "genre": "Horror", "title": "Night Terrors", "year": "2016", "minutes": "95" },
-    { "id": "235554", "genre": "Romance", "title": "Love in Paris", "year": "2015", "minutes": "110" },
-    { "id": "235555", "genre": "Thriller", "title": "Edge of Darkness", "year": "2019", "minutes": "125" },
-    { "id": "235556", "genre": "Animation", "title": "Pixie Adventures", "year": "2022", "minutes": "85" },
-    { "id": "235557", "genre": "Mystery", "title": "Whispering Shadows", "year": "2017", "minutes": "100" }
-];
-// const moviesData = "http://localhost:3000/movies";
+// Lifecycle hook to initialize data from the APIs on component mount
+onMounted(async () => {
+    try {
+        const [genresResponse, moviesResponse, movieGenresResponse] = await Promise.all([
+            axios.get('http://localhost:3000/genres'),
+            axios.get('http://localhost:3000/movies'),
+            axios.get('http://localhost:3000/movie-genres')
+        ]);
+        genres.value = genresResponse.data;
+        movies.value = moviesResponse.data;
+        movieGenres.value = movieGenresResponse.data;
 
-// Reactive variables to store genres and movies
-const genres = ref([]);  // Stores the list of genres
-const movies = ref([]);  // Stores the list of movies
-const searchQuery = ref('');  // Reactive variable to store the search query
-const filterVisible = ref(false);  // Reactive variable to toggle filter visibility
-const selectedGenre = ref('');  // Reactive variable to store the selected genre
+        // Pre-compute the genres for each movie
+        const genreMap = {};
+        movieGenresResponse.data.forEach(mg => {
+            if (!genreMap[mg.movie_id]) {
+                genreMap[mg.movie_id] = [];
+            }
+            genreMap[mg.movie_id].push(mg.genre_id);
+        });
 
-// Lifecycle hook to initialize genres and movies data on component mount
-onMounted(() => {
-    genres.value = genresData;
-    movies.value = moviesData;
+        movieGenreMap.value = genreMap;
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
 });
 
 // Function to generate the image URL based on the movie title
-const getImageUrl = (type) => `img/${type.toLowerCase()}.jpg`;
+const getImageUrl = (type) => `img/${type.toLowerCase().replace(/\s+/g, '_')}.jpg`;
 
 // Computed property to filter movies based on the search query and selected genre
 const filteredMovies = computed(() => {
     return movies.value.filter(movie => {
         const matchesSearchQuery = movie.title && movie.title.toLowerCase().includes(searchQuery.value.toLowerCase());
-        const matchesGenre = selectedGenre.value === '' || movie.genre === selectedGenre.value;
+        
+        // Get cached genre IDs and names
+        const movieGenreIds = movieGenreMap.value[movie.id] || [];
+        const movieGenresNames = genres.value.filter(g => movieGenreIds.includes(g.id)).map(g => g.genre);
+
+        const matchesGenre = selectedGenre.value === '' || movieGenresNames.includes(selectedGenre.value);
         return matchesSearchQuery && matchesGenre;
     });
 });
+
+// Function to map movie IDs to their respective genres
+const getMovieGenres = (movieId) => {
+    const genreIds = movieGenreMap.value[movieId] || [];
+    return genres.value.filter(g => genreIds.includes(g.id)).map(g => g.genre);
+};
 
 // Function to toggle filter visibility
 const toggleFilter = () => {
@@ -99,17 +91,18 @@ const closeFilter = () => {
     </div>
 
     <div class="container">
-      <div class="content">
-          <!-- Loop through each filtered movie and create a card for each one -->
-          <div v-for="movie in filteredMovies" :key="movie.id" class="card-container">
-              <div class="card" :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }">
-                  <div class="overlay"></div>
-                  <div class="card-content">
-                      <h2 class="card-title">{{ movie.title }}</h2>
-                  </div>
-              </div>
-          </div>
-      </div>
+        <div class="content">
+            <!-- Loop through each filtered movie and create a card for each one -->
+            <div v-for="movie in filteredMovies" :key="movie.id" class="card-container">
+                <div class="card" :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }">
+                    <div class="overlay"></div>
+                    <div class="card-content">
+                        <h2 class="card-title">{{ movie.title }}</h2>
+                        <p class="card-genre">{{ getMovieGenres(movie.id).join(', ') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
