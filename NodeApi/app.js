@@ -104,7 +104,7 @@ app.get('/users', async (req, res) => {
   }
 });
 
-app.post('/movie/post', async (req, res) => {
+/* app.post('/movie/post', async (req, res) => {
   try {
     const { title, year, minutes } = req.body;
     const sql = 'INSERT INTO movies (title, year, minutes) VALUES (?, ?, ?)';
@@ -113,5 +113,19 @@ app.post('/movie/post', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});
+}); */
 
+app.post('/users', async (req, res) => {
+  try {
+    const { title, year, minutes } = req.body;
+    const sql = 'INSERT INTO movies (title, year, minutes) VALUES (?, ?, ?)';
+    const [result] = await db.execute(sql, [title, year, minutes]);
+    res.status(201).json({ id: result.insertId, title, year, minutes });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}); 
+
+app.listen(3000, () => {
+  console.log('Server running on (http://localhost:3000)');
+});
