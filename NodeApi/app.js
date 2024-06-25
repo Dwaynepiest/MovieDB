@@ -42,24 +42,13 @@ app.get('/', (req, res) => {
     </html>
   `);
 });
-
-app.get('/movies', async (req, res) => {
+app.get('/favorites', async (req, res) => {
   try {
-    const [rows, fields] = await db.execute('SELECT * FROM movies');
+    const [rows, fields] = await db.execute('SELECT * FROM genres');
     res.json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Error fetching movies', error: err.message });
-  }
-});
-
-app.get('/users', async (req, res) => {
-  try {
-    const [rows, fields] = await db.execute('SELECT * FROM users');
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Error fetching users', error: err.message });
+    res.status(500).json({ message: 'Error fetching genres', error: err.message });
   }
 });
 
@@ -73,6 +62,28 @@ app.get('/genres', async (req, res) => {
   }
 });
 
+app.get('/movies', async (req, res) => {
+  try {
+    const [rows, fields] = await db.execute('SELECT * FROM movies');
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching movies', error: err.message });
+  }
+});
+
+app.get('/movie_genres', async (req, res) => {
+  try {
+    const [rows, fields] = await db.execute('SELECT * FROM movie_genres');
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching movie_genres', error: err.message });
+  }
+});
+
+
+
 app.get('/movie-types', async (req, res) => {
   try {
     const [rows, fields] = await db.execute('SELECT * FROM movie_types');
@@ -80,6 +91,16 @@ app.get('/movie-types', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error fetching movie_types', error: err.message });
+  }
+});
+
+app.get('/users', async (req, res) => {
+  try {
+    const [rows, fields] = await db.execute('SELECT * FROM users');
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching users', error: err.message });
   }
 });
 
