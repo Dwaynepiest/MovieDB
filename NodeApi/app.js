@@ -49,27 +49,15 @@ app.get('/', (req, res) => {
     </html>
   `);
 });
-
-app.get('/movies', async (req, res) => {
+app.get('/favorites', async (req, res) => {
   try {
-    const [rows, fields] = await db.execute('SELECT * FROM movies');
+    const [rows, fields] = await db.execute('SELECT * FROM favorites');
     res.json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Error fetching movies', error: err.message });
+    res.status(500).json({ message: 'Error fetching favorites', error: err.message });
   }
 });
-
-app.get('/users', async (req, res) => {
-  try {
-    const [rows, fields] = await db.execute('SELECT * FROM users');
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Error fetching users', error: err.message });
-  }
-});
-
 app.get('/genres', async (req, res) => {
   try {
     const [rows, fields] = await db.execute('SELECT * FROM genres');
@@ -79,17 +67,15 @@ app.get('/genres', async (req, res) => {
     res.status(500).json({ message: 'Error fetching genres', error: err.message });
   }
 });
-
-app.get('/movie-types', async (req, res) => {
+app.get('/movies', async (req, res) => {
   try {
-    const [rows, fields] = await db.execute('SELECT * FROM movie_types');
+    const [rows, fields] = await db.execute('SELECT * FROM movies');
     res.json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Error fetching movie_types', error: err.message });
+    res.status(500).json({ message: 'Error fetching movies', error: err.message });
   }
 });
-
 app.get('/movie-genres', async (req, res) => {
   try {
     const [rows, fields] = await db.execute('SELECT * FROM movie_genres');
@@ -99,8 +85,25 @@ app.get('/movie-genres', async (req, res) => {
     res.status(500).json({ message: 'Error fetching movie_types', error: err.message });
   }
 });
-
-app.post('/movie/post', async (req, res) => {
+app.get('/movie-types', async (req, res) => {
+  try {
+    const [rows, fields] = await db.execute('SELECT * FROM movie_types');
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching movie_types', error: err.message });
+  }
+});
+app.get('/users', async (req, res) => {
+  try {
+    const [rows, fields] = await db.execute('SELECT * FROM users');
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching users', error: err.message });
+  }
+});
+/*app.post('/movie/post', async (req, res) => {
   try {
     const { title, year, minutes } = req.body;
     const sql = 'INSERT INTO movies (title, year, minutes) VALUES (?, ?, ?)';
@@ -109,7 +112,29 @@ app.post('/movie/post', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});*/
+app.post('/users', async (req, res) => {
+  try {
+    const { id, email, password } = req.body;
+    const sql = 'INSERT INTO users (id, email, password) VALUES (?, ?, ?)';
+    const [result] = await db.execute(sql, [id, email, password]);
+    res.status(201).json({ id: result.insertId, email, password });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
+app.delete('/users/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const sql = 'DELETE FROM users WHERE id =?';
+    await db.execute(sql, [id]);
+    res.status(204).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 
 app.listen(3000, () => { console.log('Server running on (http://localhost:3000)'); }); 
 
