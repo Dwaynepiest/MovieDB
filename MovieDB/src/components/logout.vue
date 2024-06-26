@@ -1,3 +1,0 @@
-<template>
-    hoi
-</template>q
