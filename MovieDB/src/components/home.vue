@@ -1,173 +1,145 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import axios from 'axios';
+import { useRouter, useRoute } from 'vue-router';
 
 const movieTypesApiUrl = "http://localhost:3000/movie-types";
 const movieGenreApiUrl = "http://localhost:3000/genres";
-
-const genresData = [
-    { "id": 1, "genre": "Action" },
-    { "id": 2, "genre": "Comedy" },
-    { "id": 3, "genre": "Drama" },
-    { "id": 4, "genre": "Horror" },
-    { "id": 5, "genre": "Sci-Fi" },
-    { "id": 6, "genre": "Romance" },
-    { "id": 7, "genre": "Thriller" },
-    { "id": 8, "genre": "Fantasy" },
-    { "id": 9, "genre": "Documentary" },
-    { "id": 10, "genre": "Theater" }
-];
-
-const moviesData = [
-    { "id": "375282", "genre": "Comedy", "title": "La comadre", "year": "1981", "minutes": "45" },
-    { "id": "375284", "genre": "Drama", "title": "Comer es un placer", "year": "1986", "minutes": "120" },
-    { "id": "375289", "genre": "Sci-Fi", "title": "Computer Control Alt Delete", "year": "1994", "minutes": "50" },
-    { "id": "218784", "genre": "Theater", "title": "Rite Here Rite Now", "year": "2024", "minutes": "145" },
-    { "id": "445745", "genre": "Action", "title": "The Great Adventure", "year": "2020", "minutes": "130" },
-    { "id": "514531", "genre": "Romance", "title": "Love in the Time of AI", "year": "2023", "minutes": "90" },
-    { "id": "781552", "genre": "Thriller", "title": "Mystery Chronicles", "year": "2019", "minutes": "60" },
-    { "id": "125487", "genre": "Documentary", "title": "The Art of Coding", "year": "2021", "minutes": "80" },
-    { "id": "325874", "genre": "Documentary", "title": "Nature Uncovered", "year": "2022", "minutes": "50" },
-    { "id": "125762", "genre": "Comedy", "title": "Christmas Extravaganza", "year": "2018", "minutes": "45" },
-    { "id": "044877", "genre": "Horror", "title": "Nightmare on Elm Street", "year": "1984", "minutes": "92" },
-    { "id": "377621", "genre": "Fantasy", "title": "The Magic Realm", "year": "2021", "minutes": "110" },
-    { "id": "515782", "genre": "Action", "title": "High Speed Chase", "year": "2022", "minutes": "95" },
-    { "id": "215522", "genre": "Sci-Fi", "title": "Future World", "year": "2018", "minutes": "120" },
-    { "id": "152857", "genre": "Romance", "title": "Eternal Love", "year": "2019", "minutes": "110" },
-    { "id": "175486", "genre": "Thriller", "title": "Silent Killer", "year": "2020", "minutes": "100" },
-    { "id": "875210", "genre": "Horror", "title": "Ghost Mansion", "year": "2023", "minutes": "85" },
-    { "id": "235548", "genre": "Fantasy", "title": "Dragon's Quest", "year": "2017", "minutes": "115" }
-];
+const moviesApiUrl = "http://localhost:3000/movies";
+const movieGenresApiUrl = "http://localhost:3000/movie-genres";
 
 const movieTypes = ref([]);
 const movieGenres = ref([]);
 const genres = ref([]);
 const movies = ref([]);
+const movieGenreMap = ref({});
+
+// For navigation
+const router = useRouter();
+
+// Get the route parameters
+const route = useRoute();
+const movieType = route.params.type;
 
 onMounted(async () => {
     try {
-        const response = await fetch(movieTypesApiUrl);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        movieTypes.value = data;
+        const [movieTypesResponse, genresResponse, moviesResponse, movieGenresResponse] = await Promise.all([
+            axios.get(movieTypesApiUrl),
+            axios.get(movieGenreApiUrl),
+            axios.get(moviesApiUrl),
+            axios.get(movieGenresApiUrl)
+        ]);
+
+        movieTypes.value = movieTypesResponse.data;
+        movieGenres.value = movieGenresResponse.data;
+        genres.value = genresResponse.data;
+        movies.value = moviesResponse.data;
+
+        // Pre-compute the genres for each movie
+        const genreMap = {};
+        movieGenresResponse.data.forEach(mg => {
+            if (!genreMap[mg.movie_id]) {
+                genreMap[mg.movie_id] = [];
+            }
+            genreMap[mg.movie_id].push(mg.genre_id);
+        });
+        movieGenreMap.value = genreMap;
     } catch (error) {
-        console.error('Error fetching movie types:', error);
-        // Add more specific handling based on the error type
-        if (error instanceof TypeError && error.message === 'Failed to fetch') {
-            // Handle specific error case, e.g., show a message to the user
-        } else {
-            // Handle other types of errors, e.g., show a generic error message
-        }
+        console.error('Error fetching data:', error);
     }
-    try {
-        const response = await fetch(movieGenreApiUrl);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        movieGenres.value = data;
-    } catch (error) {
-        console.error('Error fetching movie types:', error);
-        // Add more specific handling based on the error type
-        if (error instanceof TypeError && error.message === 'Failed to fetch') {
-            // Handle specific error case, e.g., show a message to the user
-        } else {
-            // Handle other types of errors, e.g., show a generic error message
-        }
-    }
-    genres.value = genresData;
-    movies.value = moviesData;
 });
 
-
-const getImageUrl = (type) => `img/${type.toLowerCase().replace(/ /g, '_')}.jpg`;
+const getImageUrl = (type) => {
+    if (!type) return '';  // Return an empty string or a default image path if type is undefined
+    return `img/${type.toLowerCase().replace(/ /g, '_')}.jpg`;
+};
 
 const filterMoviesByGenre = (genre) => {
-    return movies.value.filter(movie => movie.genre === genre);
+    const genreObj = genres.value.find(g => g.genre === genre);
+    if (!genreObj) return []; // Return an empty array if the genre is not found
+    const genreId = genreObj.id;
+    return movies.value.filter(movie => movieGenreMap.value[movie.id] && movieGenreMap.value[movie.id].includes(genreId));
 };
+
+// Navigate to the movie type page
+const navigateToType = (type) => {
+    router.push({ path: `/movie-type/${type}` });
+};
+
+// Filtered movies for the dynamic page
+const filteredMovies = computed(() => {
+    if (!movieType) return [];
+    const genreObj = genres.value.find(g => g.genre === movieType);
+    if (!genreObj) return [];
+    const genreId = genreObj.id;
+    return movies.value.filter(movie => {
+        const movieGenre = movieGenres.value.find(mg => mg.movie_id === movie.id);
+        return movieGenre && movieGenre.genre_id === genreId;
+    });
+});
 </script>
 
-
 <template>
-    <div class="container">
+  <div class="container">
       <div class="content">
-        <!-- Container for the scroll title -->
-        <div>
-            <h2>Movie Types</h2>
-        </div>
-        <!-- Main container for the movie type cards, styled as a scroll container -->
-        <div class="scroll-container">
-            <!-- Loop through each item in the movieTypes array and create a card for each one -->
-            <div v-for="type in movieTypes" :key="type.id" class="card" 
-                :style="{ backgroundImage: `url('${getImageUrl(type.movie_type)}')` }">
-                <!-- Overlay div to add a dark layer over the background image -->
-                <div class="overlay"></div>
-                <!-- Content container for the card -->
-                <div class="card-content">
-                    <!-- Display the movie type as the card title -->
-                    <h2 class="card-title">{{ type.movie_type }}</h2>
-                </div>
-            </div>
-        </div>
-        <!-- Container for the scroll title -->
-        <div>
-            <h2>Movie Genres</h2>
-        </div>
-        <!-- Main container for the movie type cards, styled as a scroll container -->
-        <div class="scroll-container">
-            <!-- Loop through each item in the movieTypes array and create a card for each one -->
-            <div v-for="type in movieGenres" :key="type.id" class="card" 
-                :style="{ backgroundImage: `url('${getImageUrl(type.genre)}')` }">
-                <!-- Overlay div to add a dark layer over the background image -->
-                <div class="overlay"></div>
-                <!-- Content container for the card -->
-                <div class="card-content">
-                    <!-- Display the movie type as the card title -->
-                    <h2 class="card-title">{{ type.genre }}</h2>
-                </div>
-            </div>
-        </div>
+          <!-- Movie Types -->
+          <div>
+              <h2>Movie Types</h2>
+          </div>
+          <div class="scroll-container">
+              <div v-for="type in movieTypes" :key="type.id" class="card" :style="{ backgroundImage: `url('${getImageUrl(type.movie_type)}')` }" @click="navigateToType(type.movie_type)">
+                  <div class="overlay"></div>
+                  <div class="card-content">
+                      <h2 class="card-title">{{ type.movie_type }}</h2>
+                  </div>
+              </div>
+          </div>
 
-        <!-- Loop through each genre and create a separate scroll container for each -->
-        <div v-for="genre in genres" :key="genre.id">
-            <!-- Container for the genre title -->
-            <div>
-                <h2>{{ genre.genre }}</h2>
-            </div>
-            <!-- Main container for the movies cards, styled as a scroll container -->
-            <div class="scroll-container">
-                <!-- Loop through each movie that belongs to the current genre and create a card for each one -->
-                <div v-for="movie in filterMoviesByGenre(genre.genre)" :key="movie.id" class="card" 
-                    :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }">
-                    <!-- Overlay div to add a dark layer over the background image -->
-                    <div class="overlay"></div>
-                    <!-- Content container for the card -->
-                    <div class="card-content">
-                        <!-- Display the movie title as the card title -->
-                        <h2 class="card-title">{{ movie.title }}</h2>
-                    </div>
-                </div>
-            </div>
-        </div>
+          <!-- Movie Genres -->
+          <div>
+              <h2>Movie Genres</h2>
+          </div>
+          <div class="scroll-container">
+              <div v-for="type in genres" :key="type.id" class="card" :style="{ backgroundImage: `url('${getImageUrl(type.genre)}')` }">
+                  <div class="overlay"></div>
+                  <div class="card-content">
+                      <h2 class="card-title">{{ type.genre }}</h2>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Movies by Genre -->
+          <div v-for="genre in genres" :key="genre.id">
+              <div>
+                  <h2>{{ genre.genre }}</h2>
+              </div>
+              <div class="scroll-container">
+                  <div v-for="movie in filterMoviesByGenre(genre.genre)" :key="movie.id" class="card" :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }">
+                      <div class="overlay"></div>
+                      <div class="card-content">
+                          <h2 class="card-title">{{ movie.title }}</h2>
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
-    </div>
+  </div>
 </template>
+
+
 
 <style scoped>
 .scroll-container {
   overflow-x: auto;
-  white-space: nowrap; 
+  white-space: nowrap;
   padding: 10px;
 }
 
 .card {
   position: relative;
-  width: 45%;
-  max-width: 250px;
+  width: 250px;
   height: 15vh;
-  max-height: 500px;
-  margin-right: 2%;
+  margin-right: 20px;
   margin-bottom: 20px;
   border-radius: 25px;
   background-color: rgba(23, 23, 23, 0.5);
@@ -217,23 +189,15 @@ const filterMoviesByGenre = (genre) => {
   font-family: 'Jockey One', sans-serif;
 }
 
-
 .scroll-container {
   overflow-x: scroll;  
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
-  width: 1824px;
+  width: 100%;
 }
 
 .scroll-container::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
-}
-
-
-#scroll-title {
-  margin-bottom: 0px;
-  width: fit-content;
-  padding-left: 3%;
 }
 
 h2 {
@@ -252,6 +216,12 @@ h2 {
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .content {
