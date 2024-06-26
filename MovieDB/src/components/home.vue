@@ -108,12 +108,12 @@ const filteredMovies = computed(() => {
               </div>
           </div>
 
-          <!-- Movies by Genre -->
+          <!-- Movies by Genre eee -->
           <div v-for="genre in genres" :key="genre.id">
               <div>
                   <h2>{{ genre.genre }}</h2>
               </div>
-              <div class="scroll-container">
+              <div class="scroll-container"> 
                   <div v-for="movie in filterMoviesByGenre(genre.genre)" :key="movie.id" class="card" :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }">
                       <div class="overlay"></div>
                       <div class="card-content">
