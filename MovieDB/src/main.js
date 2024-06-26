@@ -10,7 +10,7 @@ import Favorite from './components/favorite.vue'
 import Search from './components/search.vue'
 import Settings from './components/settings.vue'
 import Profile from './components/profile.vue'
-
+import Login from './compmonents/login.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -19,11 +19,11 @@ const router = createRouter({
     { path: '/favorite', component: Favorite },
     { path: '/search', component: Search },
     { path: '/settings', component: Settings },
-
+    { path: '/login', component: Login },
     { path: '/profile', component: Profile },
   ]
 })
-
+  
 
 const app = createApp(App)
 app.use(router)
