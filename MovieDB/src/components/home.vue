@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
+import { useRouter, useRoute } from 'vue-router';
 
 const movieTypesApiUrl = "http://localhost:3000/movie-types";
 const movieGenreApiUrl = "http://localhost:3000/genres";
@@ -12,6 +13,13 @@ const movieGenres = ref([]);
 const genres = ref([]);
 const movies = ref([]);
 const movieGenreMap = ref({});
+
+// For navigation
+const router = useRouter();
+
+// Get the route parameters
+const route = useRoute();
+const movieType = route.params.type;
 
 onMounted(async () => {
     try {
@@ -52,6 +60,23 @@ const filterMoviesByGenre = (genre) => {
     const genreId = genreObj.id;
     return movies.value.filter(movie => movieGenreMap.value[movie.id] && movieGenreMap.value[movie.id].includes(genreId));
 };
+
+// Navigate to the movie type page
+const navigateToType = (type) => {
+    router.push({ path: `/movie-type/${type}` });
+};
+
+// Filtered movies for the dynamic page
+const filteredMovies = computed(() => {
+    if (!movieType) return [];
+    const genreObj = genres.value.find(g => g.genre === movieType);
+    if (!genreObj) return [];
+    const genreId = genreObj.id;
+    return movies.value.filter(movie => {
+        const movieGenre = movieGenres.value.find(mg => mg.movie_id === movie.id);
+        return movieGenre && movieGenre.genre_id === genreId;
+    });
+});
 </script>
 
 <template>
@@ -62,7 +87,7 @@ const filterMoviesByGenre = (genre) => {
               <h2>Movie Types</h2>
           </div>
           <div class="scroll-container">
-              <div v-for="type in movieTypes" :key="type.id" class="card" :style="{ backgroundImage: `url('${getImageUrl(type.movie_type)}')` }">
+              <div v-for="type in movieTypes" :key="type.id" class="card" :style="{ backgroundImage: `url('${getImageUrl(type.movie_type)}')` }" @click="navigateToType(type.movie_type)">
                   <div class="overlay"></div>
                   <div class="card-content">
                       <h2 class="card-title">{{ type.movie_type }}</h2>
@@ -100,6 +125,7 @@ const filterMoviesByGenre = (genre) => {
       </div>
   </div>
 </template>
+
 
 
 <style scoped>
