@@ -32,24 +32,33 @@ export default {
     };
   },
   mounted() {
-    axios.get('http://localhost:3000/users')
-      .then(response => {
-        this.users = response.data;
-      })
-      .catch(error => {
-        console.error("There was an error!", error);
-      });
+    this.fetchUsers();
   },
   methods: {
+    fetchUsers() {
+      axios.get('http://localhost:3000/users')
+        .then(response => {
+          this.users = response.data;
+        })
+        .catch(error => {
+          console.error("Failed to fetch users!", error);
+        });
+    },
     login() {
       axios.get('http://localhost:3000/users', {
-        email: this.email,
-        password: this.password
+        params: {
+          email: this.email,
+          password: this.password
+        }
       })
       .then(response => {
-        // Handle successful login response
-        console.log("Login successful!", response);
-        // You can also store the user's token or data in local storage or Vuex
+        // Assuming response.data is the user object from server
+        const user = response.data;
+        // Store user data in localStorage
+        localStorage.setItem('loggedInUser', JSON.stringify(user));
+        console.log("Login successful!", user);
+        // Redirect or perform other actions upon successful login
+        this.$router.push('/');
       })
       .catch(error => {
         console.error("Login failed!", error);

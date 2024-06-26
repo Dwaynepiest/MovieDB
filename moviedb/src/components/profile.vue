@@ -4,6 +4,9 @@
       <p>Name: {{ user.name }}</p>
       <p>Email: {{ user.email }}</p>
     </div>
+    <div v-else>
+      <p>Loading...</p>
+    </div>
   </template>
   
   <script>
@@ -19,6 +22,9 @@
       async fetchUserData() {
         try {
           const token = localStorage.getItem('token');
+          if (!token) {
+            throw new Error('No token found');
+          }
           const response = await axios.get('http://localhost:3000/users', {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -27,6 +33,7 @@
           this.user = response.data;
         } catch (error) {
           console.error('Failed to fetch user data:', error);
+          // Optionally handle specific errors here (e.g., unauthorized)
         }
       },
     },

@@ -12,6 +12,7 @@ import Settings from './components/settings.vue'
 import Profile from './components/profile.vue'
 import Login from './components/login.vue'
 import Register from './components/register.vue'
+import Logout from './components/logout.vue'
 
 
 const router = createRouter({
@@ -23,6 +24,7 @@ const router = createRouter({
     { path: '/settings', component: Settings },
     { path: '/register', component: Register },
     { path: '/login', component: Login },
+    { path: '/logout', component: Logout },
 
     { path: '/profile', component: Profile },
   ]
