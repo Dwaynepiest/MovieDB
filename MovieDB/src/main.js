@@ -15,6 +15,7 @@ import Register from './components/register.vue'
 import Logout from './components/logout.vue'
 
 
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -22,14 +23,14 @@ const router = createRouter({
     { path: '/favorite', component: Favorite },
     { path: '/search', component: Search },
     { path: '/settings', component: Settings },
+
     { path: '/register', component: Register },
     { path: '/login', component: Login },
     { path: '/logout', component: Logout },
-
     { path: '/profile', component: Profile },
   ]
 })
-
+  
 
 const app = createApp(App)
 app.use(router)
