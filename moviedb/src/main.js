@@ -9,6 +9,8 @@ import Search from './components/search.vue';
 import Settings from './components/settings.vue';
 import Profile from './components/profile.vue';
 import MovieTypePage from './components/MovieTypePage.vue'; 
+import MoviePage from './components/MoviePage.vue'; 
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -19,6 +21,8 @@ const router = createRouter({
     { path: '/settings', component: Settings },
     { path: '/profile', component: Profile },
     { path: '/movie-type/:type', component: MovieTypePage, props: true }, 
+    { path: '/movie/:id', name: 'MovieDetail', component: MoviePage }
+    
   ],
 });
 
