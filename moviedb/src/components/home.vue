@@ -66,6 +66,11 @@ const navigateToType = (type) => {
     router.push({ path: `/movie-type/${type}` });
 };
 
+// Navigate to the specific movie page
+const navigateToMovie = (movie_id) => {
+    router.push({ path: `/movie/${movie_id}` });
+};
+
 // Filtered movies for the dynamic page
 const filteredMovies = computed(() => {
     if (!movieType) return [];
@@ -108,13 +113,13 @@ const filteredMovies = computed(() => {
               </div>
           </div>
 
-          <!-- Movies by Genre eee -->
+          <!-- Movies by Genre -->
           <div v-for="genre in genres" :key="genre.id">
               <div>
                   <h2>{{ genre.genre }}</h2>
               </div>
               <div class="scroll-container"> 
-                  <div v-for="movie in filterMoviesByGenre(genre.genre)" :key="movie.id" class="card" :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }">
+                  <div v-for="movie in filterMoviesByGenre(genre.genre)" :key="movie.id" class="card" :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }" @click="navigateToMovie(movie.id)">
                       <div class="overlay"></div>
                       <div class="card-content">
                           <h2 class="card-title">{{ movie.title }}</h2>
@@ -125,7 +130,6 @@ const filteredMovies = computed(() => {
       </div>
   </div>
 </template>
-
 
 
 <style scoped>
