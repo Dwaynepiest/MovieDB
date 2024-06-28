@@ -42,7 +42,7 @@ import axios from 'axios';
           return;
         }
         // Call API to reset password
-        axios.post('http://localhost:3000/users/', {
+        axios.put('http://localhost:3000/users/', {
           currentPassword: this.currentPassword,
           newPassword: this.newPassword
         })
