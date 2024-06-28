@@ -130,14 +130,15 @@ app.get('/users', async (req, res) => {
 });*/
 app.post('/users', async (req, res) => {
   try {
-    const { id, email, password } = req.body;
-    const sql = 'INSERT INTO users (id, email, password) VALUES (?, ?, ?)';
-    const [result] = await db.execute(sql, [id, email, password]);
+    const { email, password } = req.body;
+    const sql = 'INSERT INTO users (email, password) VALUES (?, ?)';
+    const [result] = await db.execute(sql, [email, password]);
     res.status(201).json({ id: result.insertId, email, password });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 app.delete('/users/:id', async (req, res) => {
   try {
     const id = req.params.id;
