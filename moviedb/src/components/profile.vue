@@ -4,6 +4,22 @@
     <p><strong>ID:</strong> {{ user.id }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
     <button @click="logout" class="logout-btn">Logout</button>
+
+    <button @click="showDeleteConfirmation" class="delete-button">Delete Account</button>
+
+    <!-- Delete confirmation dialog -->
+    <div v-if="showDeleteDialog" class="delete-confirmation-dialog">
+      <div class="dialog-content">
+        <h2>Are you sure?</h2>
+        <p>This will permanently delete your account and all associated data. This action cannot be undone.</p>
+        <label>
+          <input type="checkbox" v-model="confirmDelete" />
+          I understand that this action is permanent and cannot be undone.
+        </label>
+        <button @click="deleteAccount" :disabled="!confirmDelete" class="delete-button">Delete</button>
+        <button @click="hideDeleteConfirmation" class="cancel-button">Cancel</button>
+      </div>
+    </div>
   </div>
   <div v-else>
     <p>Not logged in</p>
@@ -15,6 +31,8 @@ export default {
   data() {
     return {
       user: null,
+      showDeleteDialog: false,
+      confirmDelete: false,
     };
   },
   mounted() {
@@ -39,7 +57,29 @@ export default {
       // Redirect to login page
       this.$router.push('/login'); // Adjust route as per your application setup
     },
-  },
+    showDeleteConfirmation() {
+      this.showDeleteDialog = true;
+    },
+    hideDeleteConfirmation() {
+      this.showDeleteDialog = false;
+    },
+    deleteAccount() {
+      const userId = this.user.id;
+      // Send delete request to API
+      axios.delete(`http://localhost:3000/users/${userId}`)
+      .then(response => {
+          console.log(response.data.message);
+          // Remove user data from session storage
+          sessionStorage.removeItem('loggedInUser');
+          // Redirect to login page
+          this.$router.push('/login');
+        })
+      .catch(error => {
+          console.error(error.response.data.error);
+        });
+      this.hideDeleteConfirmation();
+    }
+  }
 };
 </script>
 
@@ -73,5 +113,50 @@ export default {
 
 .logout-btn:hover {
   background-color: #c82333;
+}
+
+.delete-button {
+  background-color: #ff0000;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #cc0000;
+}
+
+.delete-confirmation-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog-content {
+  background-color: #242424;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.cancel-button {
+  background-color: #999999;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #777777;
 }
 </style>
