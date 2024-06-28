@@ -78,11 +78,11 @@ app.get('/movies', async (req, res) => {
 });
 app.get('/movie-genres', async (req, res) => {
   try {
-    const [rows, fields] = await db.execute('SELECT * FROM users');
+    const [rows, fields] = await db.execute('SELECT * FROM movie_genres');
     res.json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Error fetching users', error: err.message });
+    res.status(500).json({ message: 'Error fetching movie_genres', error: err.message });
   }
 });
 app.get('/movie-types', async (req, res) => {
