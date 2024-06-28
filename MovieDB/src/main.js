@@ -15,6 +15,7 @@ import Register from './components/register.vue'
 
 
 
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -22,6 +23,7 @@ const router = createRouter({
     { path: '/favorite', component: Favorite,  meta: { requiresAuth: true } },
     { path: '/search', component: Search },
     { path: '/settings', component: Settings },
+
     { path: '/register', component: Register },
     { path: '/', redirect: '/login' },
     { path: '/login', component: Login, meta: { requiresGuest: true } },
