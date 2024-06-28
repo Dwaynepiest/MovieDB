@@ -40,9 +40,9 @@ export default {
         } else {
           this.error = response.data.message;
         }
-      })
+      }) 
       .catch(error => {
-        this.error = error.message || 'An error occurred';
+        this.error = error.message || 'An error ocsdscurred';
       });
     }
   }
