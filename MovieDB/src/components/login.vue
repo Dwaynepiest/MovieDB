@@ -1,77 +1,83 @@
-  <template>
-    <div class="login-container">
-      <h1>Login</h1>
-      <form @submit.prevent="login" class="login-form">
-        <div class="form-group">
-          <label for="email">Email:</label>
-          <input type="email" id="email" v-model="email" placeholder="Enter your email" required />
-        </div>
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input type="password" id="password" v-model="password" placeholder="Enter your password" required />
-        </div>
-        <button type="submit">Login</button>
-        <router-link to="/register" class="register-link">Register</router-link>
-      </form>
-      <ul v-if="users.length > 0" class="user-list">
-        <li v-for="user in users" :key="user.id" class="user-item">
-          <p><strong>ID:</strong> {{ user.id }}</p>
-          <p><strong>Email:</strong> {{ user.email }}</p>
-          <p><strong>Password:</strong> {{ user.password }}</p>
-        </li>
-      </ul>
-      <p v-else class="no-users">No users found.</p>
-    </div>
-  </template>
+<template>
+  <div class="login-container">
+    <h1>Login</h1>
+    <form @submit.prevent="login" class="login-form">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" v-model="email" placeholder="Enter your email" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" v-model="password" placeholder="Enter your password" required />
+      </div>
+      <button type="submit">Login</button>
+      <router-link to="/register" class="register-link">Register</router-link>
+    </form>
+    <p v-if="error" class="error-message">{{ error }}</p>
+    <ul v-if="users.length > 0" class="user-list">
+      <li v-for="user in users" :key="user.id" class="user-item">
+        <p><strong>ID:</strong> {{ user.id }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Password:</strong> {{ user.password }}</p>
+      </li>
+    </ul>
+    <p v-else class="no-users">No users found.</p>
+  </div>
+</template>
 
-  <script>
-  import axios from 'axios';
+<script>
+import axios from 'axios';
 
-  export default {
-    data() {
-      return {
-        users: [],
-        email: '',
-        password: ''
-      };
-    },
-    mounted() {
-      this.fetchUsers();
-    },
-    methods: {
-      fetchUsers() {
-        axios.get('http://localhost:3000/users')
-          .then(response => {
-            this.users = response.data;
-          })
-          .catch(error => {
-            console.error("Failed to fetch users!", error);
-          });
-      },
-      login() {
-        axios.get('http://localhost:3000/users', {
-          params: {
-            email: this.email,
-            password: this.password
-          }
-        })
+export default {
+  data() {
+    return {
+      users: [],
+      email: '',
+      password: '',
+      error: ''
+    };
+  },
+  mounted() {
+    this.fetchUsers();
+  },
+  methods: {
+    fetchUsers() {
+      axios.get('http://localhost:3000/users')
         .then(response => {
-          const user = response.data.find(u => u.email === this.email);
-          if (!user) {
-            throw new Error('User not found');
-          }
-          // Store user data in session storage
-          sessionStorage.setItem('loggedInUser', JSON.stringify(user));
-          console.log("Login successful!", user);
-          // Redirect or perform other actions upon successful login
-          this.$router.push('/');
+          this.users = response.data;
         })
         .catch(error => {
-          console.error("Login failed!", error);
+          console.error("Failed to fetch users!", error);
         });
-      }
+    },
+    login() {
+      axios.get('http://localhost:3000/users', {
+        params: {
+          email: this.email,
+          password: this.password
+        }
+      })
+      .then(response => {
+        const user = response.data.find(u => u.email === this.email);
+        const pw = response.data.find(u => u.password === this.password);
+        if (!user) {
+          throw new Error('User not found');
+        }
+        if (!pw) {
+          throw new Error('Incorrect password');
+        }
+        // Store user data in session storage
+        sessionStorage.setItem('loggedInUser', JSON.stringify(user));
+        console.log("Login successful!", user);
+        // Redirect or perform other actions upon successful login
+        this.$router.push('/');
+      })
+      .catch(error => {
+        this.error = error.message || 'Login Failed'; // Set the error message
+      });
     }
-  };
+  }
+};
 </script>
 
 <style scoped>
@@ -109,8 +115,6 @@ input[type="password"] {
   border-radius: 5px;
 }
 
-
-
 button:hover {
   background-color: #040405;
 }
@@ -128,4 +132,9 @@ button:hover {
   text-decoration: underline;
 }
 
+.error-message {
+  color: red;
+  text-align: center;
+  margin-top: 10px;
+}
 </style>
