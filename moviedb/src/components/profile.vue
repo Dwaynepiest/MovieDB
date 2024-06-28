@@ -3,8 +3,10 @@
     <h1>User Profile</h1>
     <p><strong>ID:</strong> {{ user.id }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
-    <button @click="logout" class="logout-btn">Logout</button> <br>
+    <p><strong>Created at:</strong> {{ formattedCreatedAt }}</p>
+    <div> <span>Date: {{ formattedDate }}</span>  <br>  <span>Time: {{ formattedTime }}</span> </div>
 
+    <button @click="logout" class="logout-btn">Logout</button> <br>
     <button @click="showDeleteConfirmation" class="delete-button">Delete Account</button>
 
     <!-- Delete confirmation dialog -->
@@ -14,7 +16,7 @@
         <p>This will permanently delete your account and all associated data. This action cannot be undone.</p>
         <label>
           <input type="checkbox" v-model="confirmDelete" />
-          I understand that this action is permanent and cannot be undone.
+          I understand that this action is permanent and can't be undone.
         </label>
         <button @click="deleteAccount" :disabled="!canDelete" class="delete-button">Delete</button>
         <button @click="hideDeleteConfirmation" class="cancel-button">Cancel</button>
@@ -42,8 +44,18 @@ export default {
   computed: {
     canDelete() {
       return this.confirmDelete;
-    }
-  },
+    },
+
+    formattedDate() {
+
+const date = new Date(this.user.created_at);
+return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+},
+formattedTime() {
+const date = new Date(this.user.created_at);
+return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+},
   methods: {
     fetchUserData() {
       const storedUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
@@ -51,6 +63,7 @@ export default {
         this.user = {
           id: storedUser.id,
           email: storedUser.email,
+          created_at: storedUser.created_at,
         };
       } else {
         console.error('No user data found in session storage.');
@@ -88,6 +101,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 .profile-container {
@@ -161,6 +175,7 @@ export default {
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
+  margin-left: 2% ;
 }
 
 .cancel-button:hover {
