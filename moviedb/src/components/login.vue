@@ -118,19 +118,31 @@
   button:hover {
     background-color: #040405;
   }
-  
+
   .register-link {
-    text-align: center;
-    margin-top: 10px;
-    display: block;
-    text-decoration: none;
-    color: #007bff;
-    font-size: 16px;
-  }
+  text-align: center;
+  justify-content: center;
+  margin-top: 1%;
+  display: flex;  
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;  }
   
   .register-link:hover {
-    text-decoration: underline;
-  }
+  border-color: #646cff;
+}
+.register-link:focus,
+.register-link:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.card
   
   .error-message {
     color: red;

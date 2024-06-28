@@ -4,11 +4,15 @@
       <form @submit.prevent="register" class="register-form">
         <div class="form-group">
           <label for="email">Email:</label>
-          <input type="email" id="email" v-model="email" placeholder="Enter your email" required />
+          <input type="email" id="email" v-model="email" placeholder="Email" required />
         </div>
         <div class="form-group">
           <label for="password">Password:</label>
-          <input type="password" id="password" v-model="password" placeholder="Enter your password" required />
+          <input type="password" id="password" v-model="password" placeholder="Password" required />
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password:</label>
+          <input type="password" id="confirmPassword" v-model="confirmPassword" placeholder="Confirm Password" required />
         </div>
         <button type="submit">Register</button>
         <router-link to="/login" class="login-link">Login</router-link>
@@ -26,12 +30,17 @@
       return {
         email: '',
         password: '',
+        confirmPassword: '',
         error: '',
         success: false,
       };
     },
     methods: {
       register() {
+        if (this.password !== this.confirmPassword) {
+          this.error = 'Passwords do not match';
+          return;
+        }
         axios.post('http://localhost:3000/users', {
           email: this.email,
           password: this.password
@@ -46,6 +55,7 @@
           this.error = '';
           this.email = '';
           this.password = '';
+          this.confirmPassword = '';
   
           // Redirect to the desired page after registration and login
           this.$router.push('/');
@@ -100,16 +110,27 @@
   
   .login-link {
     text-align: center;
-    margin-top: 10px;
-    display: block;
-    text-decoration: none;
-    color: #007bff;
-    font-size: 16px;
-  }
+  justify-content: center;
+  margin-top: 1%;
+  display: flex;  
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;  }
   
   .login-link:hover {
-    text-decoration: underline;
-  }
+  border-color: #646cff;
+}
+.login-link:focus,
+.logins-link:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
   
   .error-message {
     color: red;

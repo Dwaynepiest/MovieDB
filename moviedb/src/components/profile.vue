@@ -3,7 +3,7 @@
     <h1>User Profile</h1>
     <p><strong>ID:</strong> {{ user.id }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
-    <button @click="logout" class="logout-btn">Logout</button>
+    <button @click="logout" class="logout-btn">Logout</button> <br>
 
     <button @click="showDeleteConfirmation" class="delete-button">Delete Account</button>
 
@@ -16,7 +16,7 @@
           <input type="checkbox" v-model="confirmDelete" />
           I understand that this action is permanent and cannot be undone.
         </label>
-        <button @click="deleteAccount" :disabled="!confirmDelete" class="delete-button">Delete</button>
+        <button @click="deleteAccount" :disabled="!canDelete" class="delete-button">Delete</button>
         <button @click="hideDeleteConfirmation" class="cancel-button">Cancel</button>
       </div>
     </div>
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   data() {
     return {
@@ -37,6 +38,11 @@ export default {
   },
   mounted() {
     this.fetchUserData();
+  },
+  computed: {
+    canDelete() {
+      return this.confirmDelete;
+    }
   },
   methods: {
     fetchUserData() {
@@ -116,6 +122,7 @@ export default {
 }
 
 .delete-button {
+  margin-top:3%;
   background-color: #ff0000;
   color: #ffffff;
   border: none;
