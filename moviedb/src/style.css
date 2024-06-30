@@ -20,31 +20,22 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
 
-/* body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-    background: rgb(250,93,5);
-    background: radial-gradient(circle, rgba(250,93,5,1) 0%, rgba(164,127,85,1) 37%, rgba(108,104,104,1) 65%, rgba(68,65,65,1) 95%);
-} */
-
 body {
   margin: 0;
-  display: flex;
+  /* display: flex; */
   justify-content: center;
   align-items: center;
-  min-width: 200vh;
+  min-width: 320px;
   min-height: 100vh;
-  background: radial-gradient(circle, rgba(250,93,5,1) 0%, rgba(164,127,85,1) 37%, rgba(108,104,104,1) 65%, rgba(68,65,65,1) 95%);
+  background: radial-gradient(circle, rgba(250, 93, 5, 1) 0%, rgba(164, 127, 85, 1) 37%, rgba(108, 104, 104, 1) 65%, rgba(68, 65, 65, 1) 95%);
   position: relative;
   overflow: hidden;
-  z-index: 	-1;
+  z-index: -1;
 }
 
 body::before {
@@ -52,8 +43,8 @@ body::before {
   position: fixed;
   top: 0;
   left: 0;
-  width: 200vh;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background: url('../MovieDB-logo.png') center/cover no-repeat;
   filter: blur(8px);
   z-index: -1;
@@ -61,11 +52,11 @@ body::before {
 
 body::after {
   content: "";
-  /* position: fixed; */
+  position: fixed;
   top: 0;
   left: 0;
-  width: 200vh;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.3);
   z-index: -1;
 }
@@ -86,9 +77,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -99,10 +92,6 @@ button:focus-visible {
 }
 
 #app {
-  /* max-width: 1280px; */
-  /* margin: 0 auto; */
-  /* padding: 2rem; */
-  /* text-align: center; */
   font-family: inherit;
 }
 
@@ -111,10 +100,80 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
+  }
+}
+
+/* Media Queries for Responsiveness */
+@media only screen and (max-width: 1200px) {
+  h1 {
+    font-size: 2.8em;
+  }
+
+  .card {
+    padding: 1.5em;
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  h1 {
+    font-size: 2.4em;
+  }
+
+  .card {
+    padding: 1.2em;
+  }
+
+  button {
+    padding: 0.5em 1em;
+    font-size: 0.9em;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  h1 {
+    font-size: 2em;
+  }
+
+  .card {
+    padding: 1em;
+  }
+
+  button {
+    padding: 0.4em 0.8em;
+    font-size: 0.85em;
+  }
+
+  body::before, 
+  body::after {
+    width: 100vw;
+    height: 100vh;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  h1 {
+    font-size: 1.6em;
+  }
+
+  .card {
+    padding: 0.8em;
+  }
+
+  button {
+    padding: 0.3em 0.6em;
+    font-size: 0.8em;
+  }
+
+  body::before, 
+  body::after {
+    width: 100vw;
+    height: 100vh;
   }
 }
