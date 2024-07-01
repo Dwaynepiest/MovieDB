@@ -118,3 +118,46 @@ button:focus-visible {
     background-color: #f9f9f9;
   };
 }
+.endpoints {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+form {
+  text-align: center;
+}
+.form-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 5px;
+}
+.all_movies{
+  margin-bottom: 15px;
+}
+.movie_type {
+  margin-bottom: 15px;
+}
+.genres {
+  margin-bottom: 15px;
+}
+.favorites {
+  margin-bottom: 15px;
+}
+.movie {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
