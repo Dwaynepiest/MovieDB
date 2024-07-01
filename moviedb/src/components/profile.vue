@@ -3,7 +3,7 @@
     <h1>User Profile</h1>
     <p><strong>ID:</strong> {{ user.id }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Created at:</strong> {{ formattedCreatedAt }}</p>
+    <p><strong>Created at:</strong> </p>
     <div> <span>Date: {{ formattedDate }}</span>  <br>  <span>Time: {{ formattedTime }}</span> </div>
 
     <button @click="logout" class="logout-btn">Logout</button> <br>
