@@ -1,64 +1,69 @@
 <template>
-    <div class="popup" v-if="show">
-      <div class="popup-content">
-        <h2>Reset Password</h2>
-        <form @submit.prevent="resetPassword">
-          <label>Current Password:</label>
-          <input type="password" v-model="currentPassword" />
-          <br />
-          <label>New Password:</label>
-          <input type="password" v-model="newPassword" />
-          <br />
-          <label>Confirm New Password:</label>
-          <input type="password" v-model="confirmNewPassword" />
-          <br />
-          <p v-if="error" style="color: red">{{ error }}</p>
-          <button type="submit">Reset Password</button>
-          <button @click="$emit('close')">Cancel</button>
-        </form>
-      </div>
+  <div class="popup" v-if="show">
+    <div class="popup-content">
+      <h2>Reset Password</h2>
+      <form @submit.prevent="resetPassword">
+        <label>Old Password:</label>
+        <input type="password" v-model="oldPassword" />
+        <br />
+        <label>New Password:</label>
+        <input type="password" v-model="newPassword" />
+        <br />
+        <label>Confirm New Password:</label>
+        <input type="password" v-model="confirmNewPassword" />
+        <br />
+        <p v-if="error" style="color: red">{{ error }}</p>
+        <button type="submit">Reset Password</button>
+        <button @click="$emit('close')">Cancel</button>
+      </form>
     </div>
-  </template>
-  
-  <script>
+  </div>
+</template>
+
+<script>
 import axios from 'axios';
 
-  export default {
-    props: {
-      show: Boolean
-    },
-    data() {
-      return {
-        currentPassword: '',
-        newPassword: '',
-        confirmNewPassword: '',
-        error: ''
+export default {
+  props: {
+    show: Boolean,
+    userId: {
+      type: Number,
+      required: true
+    }
+  },
+  data() {
+    return {
+      oldPassword: '',
+      newPassword: '',
+      confirmNewPassword: '',
+      error: ''
+    };
+  },
+  methods: {
+    resetPassword() {
+      if (this.newPassword !== this.confirmNewPassword) {
+        this.error = 'New password and confirm new password do not match';
+        return;
       }
-    },
-    methods: {
-      resetPassword() {
-        if (this.newPassword !== this.confirmNewPassword) {
-          this.error = 'New password and confirm new password do not match';
-          return;
-        }
-        // Call API to reset password
-        axios.put('http://localhost:3000/users/', {
-          currentPassword: this.currentPassword,
-          newPassword: this.newPassword
-        })
-        .then(response => {
-          this.error = '';
-          this.$emit('close');
-          // Show success message or redirect to login page
-        })
-        .catch(error => {
-          this.error = 'Failed to reset password';
-        });
-      }
+
+      // Call API to reset password, passing both old and new passwords
+      axios.put(`http://localhost:3000/users/${this.userId}`, {
+        password: this.newPassword
+      })
+      .then(response => {
+        this.error = '';
+        this.$emit('close');
+        // Show success message or redirect to login page
+      })
+      .catch(error => {
+        this.error = error.response?.data?.error || 'Failed to reset password';
+      });
     }
   }
-  </script>
-  
+};
+</script>
+
+
   <style scoped>
   .popup {
     position: fixed;
