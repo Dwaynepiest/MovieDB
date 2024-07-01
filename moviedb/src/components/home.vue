@@ -194,7 +194,7 @@ const filteredMovies = computed(() => {
 }
 
 .scroll-container {
-  overflow-x: scroll;  
+  overflow-x: scroll;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   width: 100%;
@@ -214,7 +214,7 @@ h2 {
   position: relative;
   z-index: 1;
   height: 100vh;
-  width: 202vh;
+  width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
@@ -229,7 +229,76 @@ h2 {
 }
 
 .content {
-  width: 202vh;
-  padding: 0% 5% 4% 5%;
+  width: 90%;
+  padding: 1.5% 0% 5% 0%;
+  margin: 0 auto;
 }
+
+/* Media Queries for Responsiveness */
+@media only screen and (max-width: 1200px) {
+  .card {
+    width: 200px;
+  }
+
+  .card-title {
+    font-size: 16px;
+  }
+
+  h2 {
+    font-size: 28px;
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  .card {
+    width: 180px;
+  }
+
+  .card-title {
+    font-size: 14px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .card {
+    width: 150px;
+  }
+
+  .card-title {
+    font-size: 12px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  .content {
+    width: 100%;
+    padding: 2% 0%;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .card {
+    width: 120px;
+  }
+
+  .card-title {
+    font-size: 10px;
+  }
+
+  h2 {
+    font-size: 16px;
+  }
+
+  .content {
+    width: 100%;
+    padding: 2% 0%;
+  }
+}
+
 </style>
