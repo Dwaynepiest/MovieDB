@@ -48,7 +48,8 @@ export default {
 
       // Call API to reset password, passing both old and new passwords
       axios.put(`http://localhost:3000/users/${this.userId}`, {
-        password: this.newPassword
+        oldPassword: this.oldPassword,
+        newPassword: this.newPassword
       })
       .then(response => {
         this.error = '';
