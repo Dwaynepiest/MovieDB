@@ -139,6 +139,25 @@ app.post('/users', async (req, res) => {
   }
 });
 
+app.put('/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+    const sql = 'UPDATE users SET password = ? WHERE id = ?';
+    const [result] = await db.execute(sql, [password, id]);
+
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ id, password });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 app.delete('/users/:id', async (req, res) => {
   try {
     const id = req.params.id;
@@ -150,6 +169,17 @@ app.delete('/users/:id', async (req, res) => {
   }
 });
 
+
+app.post('/favorites', async (req, res) => {
+  try {
+    const { user_id, movie_id } = req.body;
+    const sql = 'INSERT INTO favorites (user_id, movie_id) VALUES (?, ?)';
+    const [result] = await db.execute(sql, [user_id, movie_id]);
+    res.status(201).json({ user_id, movie_id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 app.listen(3000, () => { console.log('Server running on (http://localhost:3000)'); }); 
