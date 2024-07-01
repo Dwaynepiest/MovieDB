@@ -7,17 +7,17 @@ const movieTypesApiUrl = "http://localhost:3000/movie-types";
 const movieGenreApiUrl = "http://localhost:3000/genres";
 const moviesApiUrl = "http://localhost:3000/movies";
 const movieGenresApiUrl = "http://localhost:3000/movie-genres";
+const addFavoriteApiUrl = "http://localhost:3000/favorites"; // Assuming this is your endpoint for adding favorites
 
 const movieTypes = ref([]);
 const movieGenres = ref([]);
 const genres = ref([]);
 const movies = ref([]);
 const movieGenreMap = ref({});
+const loggedInUser = ref(null); // Ref to store the logged-in user's data
 
 // For navigation
 const router = useRouter();
-
-// Get the route parameters
 const route = useRoute();
 const movieType = route.params.type;
 
@@ -44,6 +44,15 @@ onMounted(async () => {
             genreMap[mg.movie_id].push(mg.genre_id);
         });
         movieGenreMap.value = genreMap;
+
+        // Fetch logged-in user data from session storage
+        const storedUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+        if (storedUser) {
+            loggedInUser.value = storedUser;
+        } else {
+            console.error('No user data found in session storage.');
+            // Optionally handle this case, e.g., redirect to login page
+        }
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -69,6 +78,24 @@ const navigateToType = (type) => {
 // Navigate to the specific movie page
 const navigateToMovie = (movie_id) => {
     router.push({ path: `/movie/${movie_id}` });
+};
+
+// Function to add a movie to the favorites
+const addToFavorites = async (movieId) => {
+    if (!loggedInUser.value) {
+        console.error('User not logged in');
+        return;
+    }
+
+    try {
+        const response = await axios.post(addFavoriteApiUrl, {
+            user_id: loggedInUser.value.id,
+            movie_id: movieId
+        });
+        console.log('Movie added to favorites', response.data);
+    } catch (error) {
+        console.error('Error adding movie to favorites:', error.response ? error.response.data : error);
+    }
 };
 
 // Filtered movies for the dynamic page
@@ -119,10 +146,11 @@ const filteredMovies = computed(() => {
                   <h2>{{ genre.genre }}</h2>
               </div>
               <div class="scroll-container"> 
-                  <div v-for="movie in filterMoviesByGenre(genre.genre)" :key="movie.id" class="card" :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }" @click="navigateToMovie(movie.id)">
+                  <div v-for="movie in filterMoviesByGenre(genre.genre)" :key="movie.id" class="card" :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }">
                       <div class="overlay"></div>
                       <div class="card-content">
                           <h2 class="card-title">{{ movie.title }}</h2>
+                          <button class="favorite-button" @click.stop="addToFavorites(movie.id)">⭐</button>
                       </div>
                   </div>
               </div>
