@@ -12,20 +12,24 @@ import Settings from './components/settings.vue'
 import Profile from './components/profile.vue'
 import Login from './components/login.vue'
 import Register from './components/register.vue'
+import MovieTypePage from './components/MovieTypePage.vue';
+import MoviePage from './components/MoviePage.vue'
 
 
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', component: Home },
+    { path: '/', component: Home, meta: {requiresAuth: true} },
     { path: '/favorite', component: Favorite,  meta: { requiresAuth: true } },
-    { path: '/search', component: Search },
-    { path: '/settings', component: Settings },
-    { path: '/register', component: Register },
+    { path: '/search', component: Search, meta: {requiresAuth: true} },
+    { path: '/settings', component: Settings, meta: {requiresAuth: true}},
+    { path: '/register', component: Register, meta: {requiresAuth: true} },
     { path: '/', redirect: '/login' },
     { path: '/login', component: Login, meta: { requiresGuest: true } },
-    { path: '/profile', component: Profile, meta: { requiresAuth: true } }, 
+    { path: '/profile', component: Profile, meta: { requiresAuth: true } },
+    { path: '/movie-type/:type', component: MovieTypePage, props: true, meta: { requiresAuth: true}},
+    { path: '/movie/:id', name: 'MovieDetail', component: MoviePage, meta: {requiresAuth: true}}, 
     // other routes...
   ],
 });
