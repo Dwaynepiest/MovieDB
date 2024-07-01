@@ -214,7 +214,7 @@ h2 {
   position: relative;
   z-index: 1;
   height: 100vh;
-  width: 100%; /* Changed from 202vh to 100% for responsiveness */
+  width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
@@ -229,9 +229,9 @@ h2 {
 }
 
 .content {
-  width: 90%; /* Changed from 202vh to 90% for responsiveness */
-  padding: 1.5% 0% 5% 6%;
-  margin: 0 auto; /* Added to center the content */
+  width: 90%;
+  padding: 1.5% 0% 5% 0%;
+  margin: 0 auto;
 }
 
 /* Media Queries for Responsiveness */
