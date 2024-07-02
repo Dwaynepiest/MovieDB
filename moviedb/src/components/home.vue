@@ -233,6 +233,16 @@ h2 {
   padding: 1.5% 0% 5% 0%;
   margin: 0 auto;
 }
+.star-icon path {
+  fill: rgb(155, 155, 155);
+  stroke: rgb(155, 155, 155);
+  transition: fill 0.3s, stroke 0.3s;
+}
+
+.star-icon path:hover {
+  fill: #ffea00;
+  stroke: #ffea00;
+}
 
 /* Media Queries for Responsiveness */
 @media only screen and (max-width: 1200px) {
