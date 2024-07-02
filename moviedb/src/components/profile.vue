@@ -1,11 +1,12 @@
 <template>
   <div class="profile-container" v-if="user">
     <h1>User Profile</h1>
+    <p v-if="isAdmin">YOU'RE AN ADMIN</p>
     <p><strong>ID:</strong> {{ user.id }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
     <p><strong>Created at:</strong> </p>
     <div> <span>Date: {{ formattedDate }}</span>  <br>  <span>Time: {{ formattedTime }}</span> </div>
-
+    <button v-if="isAdmin" @click="$router.push('/UserPanel')">Go to User Panel</button>
     <button @click="logout" class="logout-btn">Logout</button> <br>
     <button @click="showDeleteConfirmation" class="delete-button">Delete Account</button>
     <button @click="showResetPasswordPopup = true">Reset Password</button>
@@ -59,7 +60,12 @@ export default {
     formattedTime() {
       const date = new Date(this.user.created_at);
       return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
-    }
+    },
+    isAdmin() {
+      console.log('isAdmin computed property called');
+      console.log('this.user:', this.user);
+      return this.user.is_admin === 1;
+      }
   },
   methods: {
     fetchUserData() {
@@ -68,7 +74,8 @@ export default {
         this.user = {
           id: storedUser.id,
           email: storedUser.email,
-          created_at: storedUser.created_at
+          created_at: storedUser.created_at,
+          is_admin: storedUser.is_admin
         };
       } else {
         console.error('No user data found in session storage.');

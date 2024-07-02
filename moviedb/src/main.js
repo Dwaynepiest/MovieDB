@@ -12,6 +12,7 @@ import Settings from './components/settings.vue'
 import Profile from './components/profile.vue'
 import Login from './components/login.vue'
 import Register from './components/register.vue'
+import Userpanel from './components/UserPanel.vue'
 
 
 
@@ -25,19 +26,20 @@ const router = createRouter({
     { path: '/register', component: Register },
     { path: '/', redirect: '/login' },
     { path: '/login', component: Login, meta: { requiresGuest: true } },
-    { path: '/profile', component: Profile, meta: { requiresAuth: true } }, 
-    // other routes...
-  ],
+    { path: '/profile', component: Profile, meta: { requiresAuth: true } },
+    { path: '/UserPanel', component: Userpanel, meta: { requiresAuth: true, requiresAdmin: true } },   ],
 });
 
-// Navigation guard to protect routes
 router.beforeEach((to, from, next) => {
-  const loggedInUser = sessionStorage.getItem('loggedInUser');
 
-  if (to.meta.requiresAuth && !loggedInUser) {
+  const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+
+  if (to.meta.requiresAuth &&!loggedInUser) {
     next('/login'); // Redirect to login if trying to access profile without authentication
   } else if (to.meta.requiresGuest && loggedInUser) {
     next('/profile'); // Redirect to profile if trying to access login when already authenticated
+  } else if (to.meta.requiresAdmin && loggedInUser.is_admin!== 1) {
+    next('/profile'); // Redirect to not authorized page if trying to access admin-only page without admin rights
   } else {
     next(); // Continue navigation
   }

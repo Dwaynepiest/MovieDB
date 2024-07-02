@@ -166,6 +166,18 @@ app.put('/users/:id', async (req, res) => {
   }
 });
 
+app.patch('/users/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { email, password } = req.body;
+    const sql = 'UPDATE users SET email =?, password =? WHERE id =?';
+    await db.execute(sql, [email, password, userId]);
+    res.json({ message: 'User updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 app.delete('/users/:id', async (req, res) => {
   try {
