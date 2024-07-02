@@ -203,16 +203,15 @@ app.post('/favorites', async (req, res) => {
   }
 });
 
-app.delete('/favorites/:id', async (req, res) => {
+app.delete('/favorites/:user_id/:movie_id', async (req, res) => {
   try {
-    const id = req.params.id;
-    const userId = req.user.id; // assuming you have a middleware that sets req.user
-    const sql = 'DELETE FROM favorites WHERE user_id =? AND movie_id =?';
-    const [result] = await db.execute(sql, [userId, id]);
+    const { user_id, movie_id } = req.params;
+    const sql = 'DELETE FROM favorites WHERE user_id = ? AND movie_id = ?';
+    const [result] = await db.execute(sql, [user_id, movie_id]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: 'Favorite not found' });
     }
-    res.status(200).json({ message: 'Favorite deleted successfully' });
+    res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
