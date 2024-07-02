@@ -118,7 +118,7 @@ app.get('/users', async (req, res) => {
     res.status(500).json({ message: 'Error fetching users', error: err.message });
   }
 });
-/*app.post('/movie/post', async (req, res) => {
+app.post('/movie/post', async (req, res) => {
   try {
     const { title, year, minutes } = req.body;
     const sql = 'INSERT INTO movies (title, year, minutes) VALUES (?, ?, ?)';
@@ -127,7 +127,7 @@ app.get('/users', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});*/
+});
 app.post('/users', async (req, res) => {
   try {
     const { email, password } = req.body;

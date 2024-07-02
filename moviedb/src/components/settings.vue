@@ -44,11 +44,66 @@ input[type="text"] {
 }
 </style>
 <script setup>
-const all_movies = document.getElementById("all_movies1").value //naar api en check op id
-const movie_type = document.getElementById("movie_type1").value //naar api en check op id
-const genres = document.getElementById("genres1").value //naar api en check op id
-const favorites = document.getElementById('favorites1').value //naar api en check op id
-const movie1 = document.getElementById("movie1").value //naar api en check op id
+  async function sendData() {
+      // Haal de values uit de inputvelden
+      const allMovies = document.getElementById("all_movies1").value;
+      const movieType = document.getElementById("movie_type1").value;
+      const genres = document.getElementById("genres1").value;
+      const favorites = document.getElementById("favorites1").value;
+
+      // Log values om te controleren
+      console.log("All Movies:", allMovies);
+      console.log("Movie Type:", movieType);
+      console.log("Genres:", genres);
+      console.log("Favorites:", favorites);
+
+      // Data object voorbereiden
+      const data = {
+        allMovies: allMovies,
+        movieType: movieType,
+        genres: genres,
+        favorites: favorites
+      };
+
+      try {
+        // Verzenden van data naar de API
+        const response = await fetch('http://localhost:3000/movie/post', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        // Respons van de API controleren
+        const result = await response.json();
+
+        console.log("Response Status:", response.status);
+        console.log("Response Data:", result);
+
+        if (response.ok) {
+          // Controleer of de respons een movieId bevat en gebruik deze
+          if (result.movieId) {
+            alert('Movie ID is correct and data is saved successfully! Movie ID: ' + result.movieId);
+          } else {
+            alert('Movie ID is not found in the response.');
+          }
+        } else {
+          alert('Failed to save data: ' + result.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while saving data.');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('save').addEventListener('click', function(event) {
+        event.preventDefault(); // Voorkomt het standaard submit gedrag van een formulier
+        sendData();
+      });
+    });
+
 </script>
     <template>
   <div class="form-container">
