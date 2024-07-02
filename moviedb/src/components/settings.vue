@@ -44,65 +44,57 @@ input[type="text"] {
 }
 </style>
 <script setup>
-  async function sendData() {
-      // Haal de values uit de inputvelden
-      const allMovies = document.getElementById("all_movies1").value;
-      const movieType = document.getElementById("movie_type1").value;
-      const genres = document.getElementById("genres1").value;
-      const favorites = document.getElementById("favorites1").value;
+ document.addEventListener('DOMContentLoaded', function() {
+  const fetchMoviesButton = document.getElementById('save');
 
-      // Log values om te controleren
-      console.log("All Movies:", allMovies);
-      console.log("Movie Type:", movieType);
-      console.log("Genres:", genres);
-      console.log("Favorites:", favorites);
+  if (fetchMoviesButton) {
+    fetchMoviesButton.addEventListener('click', function() {
+      fetchMovies();
+    });
+  } else {
+    console.error('Element with ID "fetchMovies" not found.');
+  }
+});
 
-      // Data object voorbereiden
-      const data = {
-        allMovies: allMovies,
-        movieType: movieType,
-        genres: genres,
-        favorites: favorites
-      };
+async function fetchMovies() {
+  const allMoviesUrl = document.getElementById("all_movies1").value;
+  const movieTypeUrl = document.getElementById("movie_type1").value;
+  const genresUrl = document.getElementById("genres1").value;
+  const favoritesUrl = document.getElementById("favorites1").value;
 
-      try {
-        // Verzenden van data naar de API
-        const response = await fetch('http://localhost:3000/movie/post', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
-        });
+  try {
+    // Ophalen van gegevens van de API van klasgenoot
+    const allMoviesResponse = await fetch(allMoviesUrl);
+    const movieTypeResponse = await fetch(movieTypeUrl);
+    const genresResponse = await fetch(genresUrl);
+    const favoritesResponse = await fetch(favoritesUrl);
 
-        // Respons van de API controleren
-        const result = await response.json();
-
-        console.log("Response Status:", response.status);
-        console.log("Response Data:", result);
-
-        if (response.ok) {
-          // Controleer of de respons een movieId bevat en gebruik deze
-          if (result.movieId) {
-            alert('Movie ID is correct and data is saved successfully! Movie ID: ' + result.movieId);
-          } else {
-            alert('Movie ID is not found in the response.');
-          }
-        } else {
-          alert('Failed to save data: ' + result.message);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while saving data.');
-      }
+    // Controleren of de responsen OK zijn
+    if (!allMoviesResponse.ok || !movieTypeResponse.ok || !genresResponse.ok || !favoritesResponse.ok) {
+      throw new Error('Er is een fout opgetreden bij het ophalen van de gegevens.');
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('save').addEventListener('click', function(event) {
-        event.preventDefault(); // Voorkomt het standaard submit gedrag van een formulier
-        sendData();
-      });
-    });
+    // Omzetten naar JSON
+    const allMoviesData = await allMoviesResponse.json();
+    const movieTypeData = await movieTypeResponse.json();
+    const genresData = await genresResponse.json();
+    const favoritesData = await favoritesResponse.json();
+
+    // Hier kun je de gegevens verder verwerken, bijvoorbeeld:
+    console.log("Alle films:", allMoviesData);
+    console.log("Filmtype:", movieTypeData);
+    console.log("Genres:", genresData);
+    console.log("Favorieten:", favoritesData);
+
+    // Voorbeeld: Toon de films op de pagina
+    // Vervang dit met je eigen logica om de films te tonen op basis van de ontvangen gegevens
+
+    alert('Films zijn succesvol opgehaald!');
+  } catch (error) {
+    console.error('Fout bij het ophalen van films:', error);
+    alert('Er is een fout opgetreden bij het ophalen van de films.');
+  }
+}
 
 </script>
     <template>
