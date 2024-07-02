@@ -109,7 +109,7 @@ app.get('/movie-types', async (req, res) => {
     res.status(500).json({ message: 'Error fetching movie_types', error: err.message });
   }
 });
-app.get('/users', async (req, res) => {
+/*app.get('/users', async (req, res) => {
   try {
     const [rows, fields] = await db.execute('SELECT * FROM users');
     res.json(rows);
@@ -117,7 +117,8 @@ app.get('/users', async (req, res) => {
     console.error(err);
     res.status(500).json({ message: 'Error fetching users', error: err.message });
   }
-});
+});*/
+
 /*app.post('/movie/post', async (req, res) => {
   try {
     const { title, year, minutes } = req.body;
