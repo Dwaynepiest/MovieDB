@@ -93,6 +93,10 @@ const filterMoviesByGenre = (genre) => {
 const navigateToType = (type) => {
   router.push({ path: `/movie-type/${type}` });
 };
+// Navigate to the movie page
+const navigateToMovie = (movieId) => {
+  router.push({ path: `/movie/${movieId}` });
+};
 
 const toggleFavorite = async (movieId) => {
   if (!loggedInUser.value) {
@@ -170,7 +174,7 @@ const isFavorite = (movieId) => {
                   <h2>{{ genre.genre }}</h2>
               </div>
               <div class="scroll-container"> 
-                  <div v-for="movie in filterMoviesByGenre(genre.genre)" :key="movie.id" class="card" :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }">
+                  <div v-for="movie in filterMoviesByGenre(genre.genre)" :key="movie.id" class="card" :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }" @click="navigateToMovie(movie.id)">
                       <div class="overlay"></div>
                       <div class="card-content">
                           <h2 class="card-title">{{ movie.title }}</h2>

@@ -76,15 +76,33 @@ app.get('/movies', async (req, res) => {
     res.status(500).json({ message: 'Error fetching movies', error: err.message });
   }
 });
+// app.get('/movies/:id', async (req, res) => {
+//   const movieId = parseInt(req.params.id, 10);
+//   try {
+//     const connection = await mysql.createConnection(dbConfig);
+//     const [rows, fields] = await connection.execute('SELECT * FROM movies WHERE id = ?', [movieId]);
+//     connection.end(); // Close connection after query
+//     if (rows.length === 0) {
+//       return res.status(404).send({ error: 'Movie not found' });
+//     }
+//     res.json(rows[0]);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: 'Error fetching movie', error: err.message });
+//   }
+// });
 app.get('/movies/:id', async (req, res) => {
   const movieId = parseInt(req.params.id, 10);
+  
   try {
     const connection = await mysql.createConnection(dbConfig);
     const [rows, fields] = await connection.execute('SELECT * FROM movies WHERE id = ?', [movieId]);
-    connection.end(); // Close connection after query
+    connection.end();
+    
     if (rows.length === 0) {
-      return res.status(404).send({ error: 'Movie not found' });
+      return res.status(404).json({ error: 'Movie not found' }); // Send JSON response for clarity
     }
+    
     res.json(rows[0]);
   } catch (err) {
     console.error(err);
