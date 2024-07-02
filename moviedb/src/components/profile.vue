@@ -8,6 +8,10 @@
 
     <button @click="logout" class="logout-btn">Logout</button> <br>
     <button @click="showDeleteConfirmation" class="delete-button">Delete Account</button>
+    <button @click="showResetPasswordPopup = true">Reset Password</button>
+
+    <ResetPasswordPopup :show="showResetPasswordPopup" @close="showResetPasswordPopup = false" />
+
 
     <!-- Delete confirmation dialog -->
     <div v-if="showDeleteDialog" class="delete-confirmation-dialog">
@@ -20,6 +24,7 @@
         </label>
         <button @click="deleteAccount" :disabled="!canDelete" class="delete-button">Delete</button>
         <button @click="hideDeleteConfirmation" class="cancel-button">Cancel</button>
+        
       </div>
     </div>
   </div>
@@ -30,12 +35,16 @@
 
 <script>
 import axios from 'axios';
+import ResetPasswordPopup from './ResetPasswordPopup.vue'
+
 export default {
+  components: { ResetPasswordPopup },
   data() {
     return {
       user: null,
       showDeleteDialog: false,
       confirmDelete: false,
+      showResetPasswordPopup: false
     };
   },
   mounted() {
@@ -47,15 +56,18 @@ export default {
     },
 
     formattedDate() {
-
-const date = new Date(this.user.created_at);
-return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-},
-formattedTime() {
-const date = new Date(this.user.created_at);
-return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
-}
-},
+      const date = new Date(this.user.created_at);
+      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    },
+    formattedTime() {
+      const date = new Date(this.user.created_at);
+      return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    },
+    formattedCreatedAt() {
+      const date = new Date(this.user.created_at);
+      return date.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+  },
   methods: {
     fetchUserData() {
       const storedUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
@@ -86,14 +98,14 @@ return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', ho
       const userId = this.user.id;
       // Send delete request to API
       axios.delete(`http://localhost:3000/users/${userId}`)
-      .then(response => {
+     .then(response => {
           console.log(response.data.message);
           // Remove user data from session storage
           sessionStorage.removeItem('loggedInUser');
           // Redirect to login page
           this.$router.push('/login');
         })
-      .catch(error => {
+     .catch(error => {
           console.error(error.response.data.error);
         });
       this.hideDeleteConfirmation();
