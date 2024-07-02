@@ -142,16 +142,37 @@ app.post('/users', async (req, res) => {
 app.put('/users/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { password } = req.body;
-    const sql = 'UPDATE users SET password = ? WHERE id = ?';
-    const [result] = await db.execute(sql, [password, id]);
+    const { oldPassword, newPassword } = req.body;
 
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ error: 'Old password and new password are required.' });
+    }
 
-    if (result.affectedRows === 0) {
+    const [user] = await db.execute('SELECT * FROM users WHERE id = ?', [id]);
+    if (!user || user.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    res.status(200).json({ id, password });
+    if (oldPassword !== user[0].password) {
+      return res.status(401).json({ error: 'Incorrect old password' });
+    }
+
+    const sql = 'UPDATE users SET password = ? WHERE id = ?';
+    await db.execute(sql, [newPassword, id]);
+
+    res.status(200).json({ message: 'Password updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.patch('/users/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { email, password } = req.body;
+    const sql = 'UPDATE users SET email =?, password =? WHERE id =?';
+    await db.execute(sql, [email, password, userId]);
+    res.json({ message: 'User updated successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
