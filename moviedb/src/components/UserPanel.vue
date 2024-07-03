@@ -1,3 +1,103 @@
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      users: [],
+      newUser: {
+        email: '',
+        password: ''
+      },
+      editingUser: null,
+      showAddUserForm: false,
+      showDeleteDialog: false,
+      userToDelete: null,
+      confirmDelete: false
+    }
+  },
+  mounted() {
+    this.fetchUsers();
+  },
+  methods: {
+    fetchUsers() {
+      axios.get('http://localhost:3000/users')
+        .then(response => {
+          this.users = response.data;
+        })
+        .catch(error => {
+          console.error("Failed to fetch users!", error);
+        });
+    },
+    formattedDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    },
+    formattedTime(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    },
+    editUser(user) {
+      this.editingUser = { ...user };
+    },
+    cancelEdit() {
+      this.editingUser = null;
+    },
+    updateUser() {
+      axios.patch(`http://localhost:3000/users/${this.editingUser.id}`, {
+        email: this.editingUser.email,
+        password: this.editingUser.password
+      })
+        .then(response => {
+          this.fetchUsers(); // Refetch users after update
+          this.editingUser = null;
+        })
+        .catch(error => {
+          console.error("Failed to update user!", error);
+        });
+    },
+    showDeleteConfirmation(user) {
+      this.userToDelete = user;
+      this.showDeleteDialog = true;
+    },
+    hideDeleteConfirmation() {
+      this.userToDelete = null;
+      this.showDeleteDialog = false;
+      this.confirmDelete = false;
+    },
+    deleteUser() {
+      if (!this.userToDelete) return;
+
+      axios.delete(`http://localhost:3000/users/${this.userToDelete.id}`)
+        .then(response => {
+          this.fetchUsers(); // Refetch users after deletion
+          this.hideDeleteConfirmation();
+        })
+        .catch(error => {
+          console.error("Failed to delete user!", error);
+        });
+    },
+    addUser() {
+      axios.post('http://localhost:3000/users', this.newUser)
+        .then(response => {
+          this.fetchUsers(); // Refetch users after addition
+          this.newUser.email = '';
+          this.newUser.password = '';
+          this.showAddUserForm = false;
+        })
+        .catch(error => {
+          console.error("Failed to add user!", error);
+        });
+    }
+  },
+  computed: {
+    canDelete() {
+      return this.confirmDelete;
+    }
+  }
+}
+</script>
+
 <template>
       <div class="container">
         <div class="content">
@@ -99,105 +199,7 @@
 </div>
 </div>
 </template>
-<script>
-import axios from 'axios';
 
-export default {
-  data() {
-    return {
-      users: [],
-      newUser: {
-        email: '',
-        password: ''
-      },
-      editingUser: null,
-      showAddUserForm: false,
-      showDeleteDialog: false,
-      userToDelete: null,
-      confirmDelete: false
-    }
-  },
-  mounted() {
-    this.fetchUsers();
-  },
-  methods: {
-    fetchUsers() {
-      axios.get('http://localhost:3000/users')
-        .then(response => {
-          this.users = response.data;
-        })
-        .catch(error => {
-          console.error("Failed to fetch users!", error);
-        });
-    },
-    formattedDate(dateString) {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    },
-    formattedTime(dateString) {
-      const date = new Date(dateString);
-      return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
-    },
-    editUser(user) {
-      this.editingUser = { ...user };
-    },
-    cancelEdit() {
-      this.editingUser = null;
-    },
-    updateUser() {
-      axios.patch(`http://localhost:3000/users/${this.editingUser.id}`, {
-        email: this.editingUser.email,
-        password: this.editingUser.password
-      })
-        .then(response => {
-          this.fetchUsers(); // Refetch users after update
-          this.editingUser = null;
-        })
-        .catch(error => {
-          console.error("Failed to update user!", error);
-        });
-    },
-    showDeleteConfirmation(user) {
-      this.userToDelete = user;
-      this.showDeleteDialog = true;
-    },
-    hideDeleteConfirmation() {
-      this.userToDelete = null;
-      this.showDeleteDialog = false;
-      this.confirmDelete = false;
-    },
-    deleteUser() {
-      if (!this.userToDelete) return;
-
-      axios.delete(`http://localhost:3000/users/${this.userToDelete.id}`)
-        .then(response => {
-          this.fetchUsers(); // Refetch users after deletion
-          this.hideDeleteConfirmation();
-        })
-        .catch(error => {
-          console.error("Failed to delete user!", error);
-        });
-    },
-    addUser() {
-      axios.post('http://localhost:3000/users', this.newUser)
-        .then(response => {
-          this.fetchUsers(); // Refetch users after addition
-          this.newUser.email = '';
-          this.newUser.password = '';
-          this.showAddUserForm = false;
-        })
-        .catch(error => {
-          console.error("Failed to add user!", error);
-        });
-    }
-  },
-  computed: {
-    canDelete() {
-      return this.confirmDelete;
-    }
-  }
-}
-</script>
 <style scoped>
 table {
   margin-left:10%;
