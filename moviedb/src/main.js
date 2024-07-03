@@ -30,7 +30,6 @@ const router = createRouter({
     { path: '/profile', component: Profile, meta: { requiresAuth: true } },
     { path: '/movie-type/:type', component: MovieTypePage, props: true, meta: { requiresAuth: true}},
     { path: '/movie/:id', name: 'MovieDetail', component: MoviePage, meta: {requiresAuth: true}}, 
-    // other routes...
   ],
 });
 
