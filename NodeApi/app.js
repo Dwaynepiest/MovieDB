@@ -76,15 +76,33 @@ app.get('/movies', async (req, res) => {
     res.status(500).json({ message: 'Error fetching movies', error: err.message });
   }
 });
+// app.get('/movies/:id', async (req, res) => {
+//   const movieId = parseInt(req.params.id, 10);
+//   try {
+//     const connection = await mysql.createConnection(dbConfig);
+//     const [rows, fields] = await connection.execute('SELECT * FROM movies WHERE id = ?', [movieId]);
+//     connection.end(); // Close connection after query
+//     if (rows.length === 0) {
+//       return res.status(404).send({ error: 'Movie not found' });
+//     }
+//     res.json(rows[0]);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: 'Error fetching movie', error: err.message });
+//   }
+// });
 app.get('/movies/:id', async (req, res) => {
   const movieId = parseInt(req.params.id, 10);
+  
   try {
     const connection = await mysql.createConnection(dbConfig);
     const [rows, fields] = await connection.execute('SELECT * FROM movies WHERE id = ?', [movieId]);
-    connection.end(); // Close connection after query
+    connection.end();
+    
     if (rows.length === 0) {
-      return res.status(404).send({ error: 'Movie not found' });
+      return res.status(404).json({ error: 'Movie not found' }); // Send JSON response for clarity
     }
+    
     res.json(rows[0]);
   } catch (err) {
     console.error(err);
@@ -118,16 +136,18 @@ app.get('/users', async (req, res) => {
     res.status(500).json({ message: 'Error fetching users', error: err.message });
   }
 });
-// app.post('/movie/post', async (req, res) => {
-//   try {
-//     const { title, year, minutes } = req.body;
-//     const sql = 'INSERT INTO movies (title, year, minutes) VALUES (?, ?, ?)';
-//     const [result] = await db.execute(sql, [title, year, minutes]);
-//     res.status(201).json({ id: result.insertId, title, year, minutes });
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
+
+/*app.post('/movie/post', async (req, res) => {
+  try {
+    const { title, year, minutes } = req.body;
+    const sql = 'INSERT INTO movies (title, year, minutes) VALUES (?, ?, ?)';
+    const [result] = await db.execute(sql, [title, year, minutes]);
+    res.status(201).json({ id: result.insertId, title, year, minutes });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});*/
+
 app.post('/users', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -138,6 +158,46 @@ app.post('/users', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.put('/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ error: 'Old password and new password are required.' });
+    }
+
+    const [user] = await db.execute('SELECT * FROM users WHERE id = ?', [id]);
+    if (!user || user.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (oldPassword !== user[0].password) {
+      return res.status(401).json({ error: 'Incorrect old password' });
+    }
+
+    const sql = 'UPDATE users SET password = ? WHERE id = ?';
+    await db.execute(sql, [newPassword, id]);
+
+    res.status(200).json({ message: 'Password updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.patch('/users/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { email, password } = req.body;
+    const sql = 'UPDATE users SET email =?, password =? WHERE id =?';
+    await db.execute(sql, [email, password, userId]);
+    res.json({ message: 'User updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 app.delete('/users/:id', async (req, res) => {
   try {
@@ -196,6 +256,30 @@ app.get('/movie-types/:id', async (req, res) => {
 });
 
 
+app.post('/favorites', async (req, res) => {
+  try {
+    const { user_id, movie_id } = req.body;
+    const sql = 'INSERT INTO favorites (user_id, movie_id) VALUES (?, ?)';
+    const [result] = await db.execute(sql, [user_id, movie_id]);
+    res.status(201).json({ user_id, movie_id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/favorites/:user_id/:movie_id', async (req, res) => {
+  try {
+    const { user_id, movie_id } = req.params;
+    const sql = 'DELETE FROM favorites WHERE user_id = ? AND movie_id = ?';
+    const [result] = await db.execute(sql, [user_id, movie_id]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Favorite not found' });
+    }
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.listen(3000, () => { console.log('Server running on (http://localhost:3000)'); }); 
 
