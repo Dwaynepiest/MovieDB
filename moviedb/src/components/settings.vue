@@ -50,6 +50,7 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .settings {
   padding: 20px;
@@ -71,3 +72,4 @@ button {
   padding: 10px 15px;
 }
 </style>
+

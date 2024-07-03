@@ -111,7 +111,7 @@ const closeFilter = () => {
   position: relative;
   z-index: 1;
   height: 100vh;
-  width: 202vh;
+  width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
@@ -122,18 +122,18 @@ const closeFilter = () => {
 }
 
 .content {
-  width: 202vh;
-  padding: 1.5% 0% 5% 6%;
+  width: 90%;
+  padding: 1.5% 0 5% 0;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
-.container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
-}
-
 
 .card-container {
-  display: inline-block;
-  margin-right: 20px;
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  margin: 10px;
 }
 
 .card {
@@ -143,11 +143,12 @@ const closeFilter = () => {
   border-radius: 25px;
   background-color: rgb(23 23 23 / 84%);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: inline-block;
-  vertical-align: top;
   background-size: cover;
   background-position: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .card:hover {
@@ -171,9 +172,9 @@ const closeFilter = () => {
 .card-content {
   display: flex;
   flex-direction: column;
-  justify-content: center; 
-  align-items: center; 
-  height: 100%; 
+  justify-content: center;
+  align-items: center;
+  height: 100%;
   padding: 10px;
   position: relative;
   z-index: 2;
@@ -186,33 +187,91 @@ const closeFilter = () => {
   font-family: 'Jockey One', sans-serif;
 }
 
+.card-genre {
+  color: white;
+}
+
+.search-bar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
 .search-input {
-  width: 400px;
+  width: 50%;
   height: 30px;
   border-radius: 25px;
   margin: 10px;
-  padding: 0px 6px;
+  padding: 0 6px;
+}
+
+.filter-button {
+  height: 30px;
+  border-radius: 25px;
+  padding: 0 20px;
 }
 
 .filter-container {
   margin: 10px 0;
   background-color: rgb(23 23 23 / 84%);
-  width: 500px;
+  width: 35%;
   padding: 10px;
   border-radius: 20px;
   position: absolute;
   z-index: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .filter-container h3 {
   margin: 0 0 10px;
 }
 
-.filter-container select {
-  width: 400px;
+.genre-select {
+  width: 80%;
   height: 30px;
   border-radius: 25px;
-  margin: 10px;
-  padding: 0px 6px;
+  margin: 10px 0;
+  padding: 0 6px;
+}
+
+.close-button {
+  height: 30px;
+  border-radius: 25px;
+  padding: 0 20px;
+}
+
+/* Media Queries for Responsiveness */
+@media only screen and (max-width: 768px) {
+  .card {
+    width: 200px;
+  }
+  .search-input {
+    width: 60%;
+  }
+  .filter-container {
+    width: 60%;
+  }
+  .genre-select {
+    width: 80%;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .card {
+    width: 150px;
+  }
+  .search-input {
+    width: 70%;
+  }
+  .filter-container {
+    width: 70%;
+  }
+  .genre-select {
+    width: 80%;
+  }
 }
 </style>
