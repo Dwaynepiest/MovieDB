@@ -58,10 +58,8 @@ const getMovieGenres = (movieId) => {
 
 const deleteFavorite = async (movieId) => {
   try {
-    const response = await axios.delete(`${favoritesApiUrl}/${movieId}`, {
-      data: { user_id: loggedInUser.value.id }
-    });
-    if (response.status === 200 || response.status === 204) {
+    const response = await axios.delete(`${favoritesApiUrl}/${loggedInUser.value.id}/${movieId}`);
+    if (response.status === 204) {
       favoriteMovies.value = favoriteMovies.value.filter(movie => movie.id !== movieId);
       console.log('Deleted favorite:', movieId);
     } else {
@@ -72,6 +70,7 @@ const deleteFavorite = async (movieId) => {
     console.error('Error details:', error.response ? error.response.data : error.message);
   }
 };
+
 
 </script>
 
