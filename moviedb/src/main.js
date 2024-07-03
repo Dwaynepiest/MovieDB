@@ -12,17 +12,20 @@ import Settings from './components/settings.vue'
 import Profile from './components/profile.vue'
 import Login from './components/login.vue'
 import Register from './components/register.vue'
+
 import Userpanel from './components/UserPanel.vue'
 import MovieTypePage from './components/MovieTypePage.vue'
 import MoviePage from './components/MoviePage.vue';
 
 
 
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', component: Home },
+    { path: '/', component: Home, meta: {requiresAuth: true} },
     { path: '/favorite', component: Favorite,  meta: { requiresAuth: true } },
+
     { path: '/search', component: Search },
     { path: '/settings', component: Settings },
     { path: '/register', component: Register },
@@ -32,6 +35,7 @@ const router = createRouter({
     { path: '/login', component: Login, meta: { requiresGuest: true } },
     { path: '/profile', component: Profile, meta: { requiresAuth: true } },
     { path: '/UserPanel', component: Userpanel, meta: { requiresAuth: true, requiresAdmin: true } },   ],
+
 });
 
 router.beforeEach((to, from, next) => {
