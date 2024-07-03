@@ -9,6 +9,7 @@
           <th>Password</th>
           <th>Created At</th>
           <th>Actions</th>
+          
         </tr>
       </thead>
       <tbody>
@@ -24,13 +25,13 @@
             </div>
           </td>
           <td>
-            <button @click="editUser(user)">Edit</button>
+            <button @click="editUser(user)" >Edit</button>
             <button @click="showDeleteConfirmation(user)">Delete</button>
           </td>
         </tr>
       </tbody>
     </table>
-    <button @click="showAddUserForm = true">Add User</button>
+    <button @click="showAddUserForm = true"style="margin-left: 85%">Add User</button>
 
     <!-- Add user form modal -->
     <div v-if="showAddUserForm" class="modal">
@@ -194,8 +195,9 @@ export default {
 </script>
 <style scoped>
 table {
+  margin-left:10%;
   border-collapse: collapse;
-  width: 100%;
+  width: 80%;
 }
 
 th, td {
