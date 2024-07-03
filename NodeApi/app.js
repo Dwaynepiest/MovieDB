@@ -109,7 +109,7 @@ app.get('/movies/:id', async (req, res) => {
     res.status(500).json({ message: 'Error fetching movie', error: err.message });
   }
 });
-app.get('/movie-genres', async (req, res) => {
+app.get('/movie-genres/', async (req, res) => {
   try {
     const [rows, fields] = await db.execute('SELECT * FROM movie_genres');
     res.json(rows);
@@ -136,6 +136,7 @@ app.get('/users', async (req, res) => {
     res.status(500).json({ message: 'Error fetching users', error: err.message });
   }
 });
+
 
 /*app.post('/movie/post', async (req, res) => {
   try {
@@ -206,6 +207,51 @@ app.delete('/users/:id', async (req, res) => {
     res.status(204).json({ message: 'User deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+app.get('/genres/:id', async (req, res) => {
+  const movieId = parseInt(req.params.id, 10);
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [rows, fields] = await connection.execute('SELECT * FROM genres WHERE id = ?', [genreId]);
+    connection.end(); // Close connection after query
+    if (rows.length === 0) {
+      return res.status(404).send({ error: 'Movie not found' });
+    }
+    res.json(rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching movie', error: err.message });
+  }
+});
+app.get('/favorites/:id', async (req, res) => {
+  const movieId = parseInt(req.params.id, 10);
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [rows, fields] = await connection.execute('SELECT * FROM favorites WHERE id = ?', [favoritesId]);
+    connection.end(); // Close connection after query
+    if (rows.length === 0) {
+      return res.status(404).send({ error: 'Movie not found' });
+    }
+    res.json(rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching movie', error: err.message });
+  }
+});
+app.get('/movie-types/:id', async (req, res) => {
+  const movieId = parseInt(req.params.id, 10);
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [rows, fields] = await connection.execute('SELECT * FROM movie-types WHERE id = ?', [movie_typesId]);
+    connection.end(); // Close connection after query
+    if (rows.length === 0) {
+      return res.status(404).send({ error: 'Movie not found' });
+    }
+    res.json(rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching movie', error: err.message });
   }
 });
 
