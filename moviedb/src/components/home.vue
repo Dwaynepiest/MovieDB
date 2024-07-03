@@ -19,6 +19,7 @@ const movieGenreMap = ref({});
 const loggedInUser = ref(null); // Ref to store the logged-in user's data
 const favorites = ref([]); // Store the user's favorite movies
 
+
 // For navigation
 const router = useRouter();
 const route = useRoute();
@@ -93,16 +94,25 @@ const filterMoviesByGenre = (genre) => {
 const navigateToType = (type) => {
   router.push({ path: `/movie-type/${type}` });
 };
+// Navigate to the movie page
+const navigateToMovie = (movieId) => {
+  router.push({ path: `/movie/${movieId}` });
+};
+const redirectToLogin = () => {
+  router.push({ path: '/login' });
+};
+
 
 const toggleFavorite = async (movieId) => {
   if (!loggedInUser.value) {
     console.error('User not logged in');
+    redirectToLogin();
     return;
   }
 
   try {
     const favoriteIndex = favorites.value.findIndex(favorite => favorite.user_id === loggedInUser.value.id && favorite.movie_id === movieId);
-    if (favoriteIndex!== -1) {
+    if (favoriteIndex !== -1) {
       const favoriteId = favorites.value[favoriteIndex].id;
       await axios.delete(`${favoritesApiUrl}/${favoriteId}`);
       favorites.value.splice(favoriteIndex, 1);
@@ -114,9 +124,10 @@ const toggleFavorite = async (movieId) => {
       console.log('Added to favorites', movieId);
     }
   } catch (error) {
-    console.error('Error toggling favorite status:', error.response? error.response.data : error);
+    console.error('Error toggling favorite status:', error.response ? error.response.data : error);
   }
 };
+
 
 // Filtered movies for the dynamic page
 const filteredMovies = computed(() => {
@@ -131,8 +142,9 @@ const filteredMovies = computed(() => {
 });
 
 const isFavorite = (movieId) => {
-  return favorites.value.includes(movieId);
+  return favorites.value.some(favorite => favorite.movie_id === movieId);
 };
+
 </script>
 
 <template>
@@ -170,7 +182,7 @@ const isFavorite = (movieId) => {
                   <h2>{{ genre.genre }}</h2>
               </div>
               <div class="scroll-container"> 
-                  <div v-for="movie in filterMoviesByGenre(genre.genre)" :key="movie.id" class="card" :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }">
+                  <div v-for="movie in filterMoviesByGenre(genre.genre)" :key="movie.id" class="card" :style="{ backgroundImage: `url('${getImageUrl(movie.title)}')` }" @click="navigateToMovie(movie.id)">
                       <div class="overlay"></div>
                       <div class="card-content">
                           <h2 class="card-title">{{ movie.title }}</h2>
