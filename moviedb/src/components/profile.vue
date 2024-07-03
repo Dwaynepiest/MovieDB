@@ -1,37 +1,3 @@
-<template>
-  <div class="profile-container" v-if="user">
-    <h1>User Profile</h1>
-    <p v-if="isAdmin">YOU'RE AN ADMIN</p>
-    <p><strong>ID:</strong> {{ user.id }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Created at:</strong> </p>
-    <div> <span>Date: {{ formattedDate }}</span>  <br>  <span>Time: {{ formattedTime }}</span> </div>
-    <button v-if="isAdmin" @click="$router.push('/UserPanel')">Go to User Panel</button>
-    <button @click="logout" class="logout-btn">Logout</button> <br>
-    <button @click="showDeleteConfirmation" class="delete-button">Delete Account</button>
-    <button @click="showResetPasswordPopup = true">Reset Password</button>
-
-    <ResetPasswordPopup :show="showResetPasswordPopup" :userId="user.id" @close="showResetPasswordPopup = false" />
-
-    <!-- Delete confirmation dialog -->
-    <div v-if="showDeleteDialog" class="delete-confirmation-dialog">
-      <div class="dialog-content">
-        <h2>Are you sure?</h2>
-        <p>This will permanently delete your account and all associated data. This action cannot be undone.</p>
-        <label>
-          <input type="checkbox" v-model="confirmDelete" />
-          I understand that this action is permanent and can't be undone.
-        </label>
-        <button @click="deleteAccount" :disabled="!canDelete" class="delete-button">Delete</button>
-        <button @click="hideDeleteConfirmation" class="cancel-button">Cancel</button>
-      </div>
-    </div>
-  </div>
-  <div v-else>
-    <p>Not logged in</p>
-  </div>
-</template>
-
 <script>
 import axios from 'axios';
 import ResetPasswordPopup from './ResetPasswordPopup.vue';
@@ -114,33 +80,110 @@ export default {
 };
 </script>
 
+<template>
+    <div class="container">
+      <div class="content">
+        <div class="profile-container" v-if="user">
+          <h1 class="title">User Profile</h1>
+          <p v-if="isAdmin" class="admin-msg">YOU'RE AN ADMIN</p>
+          <p><strong>ID:</strong> {{ user.id }}</p>
+          <p><strong>Email:</strong> {{ user.email }}</p>
+          <p class="title"><strong>Created at:</strong></p>
+          <span>Date: {{ formattedDate }}</span>  <span>Time: {{ formattedTime }}</span> <br><br>
+          <div class="buttons">
+            <button v-if="isAdmin" @click="$router.push('/UserPanel')">User Panel</button>
+            <button @click="showDeleteConfirmation" class="delete-button">Delete Account</button>
+            <button @click="showResetPasswordPopup = true">Reset Password</button>
+            <button @click="logout" class="logout-btn">Logout</button> <br>
+          </div>
+          <ResetPasswordPopup :show="showResetPasswordPopup" :userId="user.id" @close="showResetPasswordPopup = false" />
+
+          <!-- Delete confirmation dialog -->
+          <div v-if="showDeleteDialog" class="delete-confirmation-dialog">
+            <div class="dialog-content">
+              <h2>Are you sure?</h2>
+              <p>This will permanently delete your account and all associated data. This action cannot be undone.</p>
+              <label>
+                <input type="checkbox" v-model="confirmDelete" />
+                I understand that this action is permanent and can't be undone.
+              </label>
+              <button @click="deleteAccount" :disabled="!canDelete" class="delete-button">Delete</button>
+              <button @click="hideDeleteConfirmation" class="cancel-button">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <div v-else>
+          <p>Not logged in</p>
+        </div>
+      </div>
+    </div>
+</template>
 
 <style scoped>
+.container {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  width: 202vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.content {
+  width: 202vh;
+  padding: 0% 5% 4% 5%;
+}
+
 .profile-container {
-  max-width: 400px;
-  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+  max-width: 600px;
   padding: 20px;
-  border-radius: 5px;
   text-align: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 25px;
+  margin: 5% auto;
 }
 
-.profile-container h1 {
-  margin-bottom: 20px;
+.admin-msg {
+  color: grey;
+  font-size: 15px;
+  margin: 0;
 }
 
-.profile-container p {
-  margin-bottom: 10px;
+.title {
+  margin: 10px 0px 0px 0px;
+}
+
+.logout-btn,
+.delete-button,
+.cancel-button {
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%; /* Ensure buttons take full width on smaller screens */
+  max-width: 300px;
+  margin: 5px auto; /* Center buttons */
 }
 
 .logout-btn {
   background-color: #dc3545;
   color: white;
   border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
 .logout-btn:hover {
@@ -148,17 +191,23 @@ export default {
 }
 
 .delete-button {
-  margin-top:3%;
   background-color: #ff0000;
   color: #ffffff;
   border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
 }
 
 .delete-button:hover {
   background-color: #cc0000;
+}
+
+.cancel-button {
+  background-color: #999999;
+  color: #ffffff;
+  border: none;
+}
+
+.cancel-button:hover {
+  background-color: #777777;
 }
 
 .delete-confirmation-dialog {
@@ -178,19 +227,47 @@ export default {
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 400px;
+  text-align: left;
 }
 
-.cancel-button {
-  background-color: #999999;
-  color: #ffffff;
-  border: none;
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center; /* Center buttons */
+  padding: 10px;
+  margin-bottom: 0;
+}
+
+.buttons button {
+  flex: 1 1 auto;
+  min-width: 150px;
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
-  margin-left: 2% ;
+  border-radius: 20px;
+  margin: 5px;
 }
 
-.cancel-button:hover {
-  background-color: #777777;
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 10px;
+    margin: 10% auto;
+  }
+
+  .buttons button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  .logout-btn,
+  .delete-button,
+  .cancel-button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
 }
+
 </style>
