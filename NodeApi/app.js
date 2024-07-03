@@ -223,7 +223,19 @@ app.post('/favorites', async (req, res) => {
   }
 });
 
-
+app.delete('/favorites/:user_id/:movie_id', async (req, res) => {
+  try {
+    const { user_id, movie_id } = req.params;
+    const sql = 'DELETE FROM favorites WHERE user_id = ? AND movie_id = ?';
+    const [result] = await db.execute(sql, [user_id, movie_id]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Favorite not found' });
+    }
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 app.listen(3000, () => { console.log('Server running on (http://localhost:3000)'); }); 
 
 
