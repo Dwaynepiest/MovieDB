@@ -105,7 +105,7 @@ export default {
               <p>This will permanently delete your account and all associated data. This action cannot be undone.</p>
               <label>
                 <input type="checkbox" v-model="confirmDelete" />
-                I understand that this action is permanent and can't be undone.
+                I understand that this action is permanent and can't be undone.<br>
               </label>
               <button @click="deleteAccount" :disabled="!canDelete" class="delete-button">Delete</button>
               <button @click="hideDeleteConfirmation" class="cancel-button">Cancel</button>

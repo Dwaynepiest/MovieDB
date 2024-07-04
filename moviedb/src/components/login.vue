@@ -14,14 +14,6 @@
         <router-link to="/register" class="register-link">Register</router-link>
       </form>
       <p v-if="error" class="error-message">{{ error }}</p>
-      <ul v-if="users.length > 0" class="user-list">
-        <li v-for="user in users" :key="user.id" class="user-item">
-          <p><strong>ID:</strong> {{ user.id }}</p>
-          <p><strong>Email:</strong> {{ user.email }}</p>
-          <p><strong>Password:</strong> {{ user.password }}</p>
-        </li>
-      </ul>
-      <p v-else class="no-users">No users found.</p>
     </div>
   </template>
   
