@@ -23,7 +23,7 @@ import MoviePage from './components/MoviePage.vue';
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', component: Home, meta: {requiresAuth: true} },
+    { path: '/', component: Home, },
     { path: '/favorite', component: Favorite,  meta: { requiresAuth: true } },
 
     { path: '/search', component: Search },
