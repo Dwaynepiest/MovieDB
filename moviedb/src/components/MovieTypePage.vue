@@ -8,10 +8,10 @@ const route = useRoute();
 const movieType = route.params.type;
 
 // API URLs
-const moviesApiUrl = "http://localhost:3000/movies";
-const movieTypesApiUrl = "http://localhost:3000/movie-types";
+const moviesApiUrl = getApiUrl('Movies API URL');
+const movieTypesApiUrl = getApiUrl('Movie Types API URL');
 const movieGenresApiUrl = "http://localhost:3000/movie-genres";
-const genresApiUrl = "http://localhost:3000/genres";
+const genresApiUrl = getApiUrl('Genres API URL');
 
 // Refs for storing data
 const movies = ref([]);

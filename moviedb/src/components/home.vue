@@ -2,10 +2,12 @@
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { useRouter, useRoute } from 'vue-router';
+import { getApiUrl } from './apiService.js';
 
-const movieTypesApiUrl = "http://localhost:3000/movie-types";
-const movieGenreApiUrl = "http://localhost:3000/genres";
-const moviesApiUrl = "http://localhost:3000/movies";
+
+const movieTypesApiUrl = getApiUrl('Movie Types API URL');
+const genresApiUrl = getApiUrl('Movie Genres API URL');
+const moviesApiUrl = getApiUrl('Movies API URL');
 const movieGenresApiUrl = "http://localhost:3000/movie-genres";
 // const favoritesApiUrl = "http://localhost:3000/favorites"; // Assuming this is your endpoint for favorites
 const favoritesApiUrl = 'http://localhost:3000/favorites';
@@ -29,7 +31,7 @@ onMounted(async () => {
   try {
     const [movieTypesResponse, genresResponse, moviesResponse, movieGenresResponse] = await Promise.all([
       axios.get(movieTypesApiUrl),
-      axios.get(movieGenreApiUrl),
+      axios.get(genresApiUrl),
       axios.get(moviesApiUrl),
       axios.get(movieGenresApiUrl)
     ]);

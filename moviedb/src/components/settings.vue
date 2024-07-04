@@ -26,26 +26,34 @@
 </template>
 
 <script>
+import { reactive } from 'vue';
+import { saveApiUrls } from './apiService.js';
+
 export default {
-  data() {
+  setup() {
+    const urls = reactive([
+      { name: 'Genres API URL', url: '' },
+      { name: 'Movietypes API URL', url: '' },
+      { name: 'Favorites API URL', url: '' },
+      { name: 'All Movies API URL', url: '' },
+      { name: 'Movie API URL', url: '' },
+    ]);
+
+    function saveUrl(apiName, apiUrl) {
+      const existingApi = urls.find(api => api.name === apiName);
+      if (existingApi) {
+        existingApi.url = apiUrl;
+      } else {
+        urls.push({ name: apiName, url: apiUrl });
+      }
+      saveApiUrls(urls);
+      console.log(`Saved ${apiName}: ${apiUrl}`);
+    }
+
     return {
-      genresUrl: '',
-      movietypesUrl: '',
-      favoritesUrl: '',
-      allMoviesUrl: '',
-      movieUrl: '',
+      urls,
+      saveUrl,
     };
-  },
-  methods: {
-    saveUrls() {
-      this.$emit('save-urls', {
-        genresUrl: this.genresUrl,
-        movietypesUrl: this.movietypesUrl,
-        favoritesUrl: this.favoritesUrl,
-        allMoviesUrl: this.allMoviesUrl,
-        movieUrl: this.movieUrl,
-      });
-    },
   },
 };
 </script>
@@ -71,4 +79,3 @@ button {
   padding: 10px 15px;
 }
 </style>
-
