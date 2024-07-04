@@ -96,7 +96,7 @@ const navigateToType = (type) => {
 };
 // Navigate to the movie page
 const navigateToMovie = (movieId) => {
-  router.push({ path: `/movie/${movieId}` });
+  router.push({ path: `/movies/${movieId}` });
 };
 const redirectToLogin = () => {
   router.push({ path: '/login' });

@@ -83,7 +83,7 @@ const closeFilter = () => {
     <!-- Filter Div -->
     <div v-if="filterVisible" class="filter-container">
         <h3>Filter by Genre</h3>
-        <select v-model="selectedGenre">
+        <select v-model="selectedGenre" class="genre-select">
             <option value="">All</option>
             <option v-for="genre in genres" :key="genre.id" :value="genre.genre">{{ genre.genre }}</option>
         </select>

@@ -93,20 +93,36 @@ app.get('/movies', async (req, res) => {
 // });
 app.get('/movies/:id', async (req, res) => {
   const movieId = parseInt(req.params.id, 10);
-  
+
+  console.log('Received movie ID:', req.params.id); // Debugging line
+
+  if (isNaN(movieId)) {
+    console.error('Invalid movie ID:', req.params.id); // Debugging line
+    return res.status(400).json({ error: 'Invalid movie ID' });
+  }
+
+  let connection;
+
   try {
-    const connection = await mysql.createConnection(dbConfig);
-    const [rows, fields] = await connection.execute('SELECT * FROM movies WHERE id = ?', [movieId]);
-    connection.end();
-    
+    connection = await mysql.createConnection(dbConfig);
+    const [rows] = await connection.execute(
+      `SELECT m.id, m.title, m.year, m.minutes, m.movie_type, mt.movie_type as type_name
+       FROM movies m
+       LEFT JOIN movie_types mt ON m.movie_type = mt.id
+       WHERE m.id = ?`, [movieId]);
+
     if (rows.length === 0) {
-      return res.status(404).json({ error: 'Movie not found' }); // Send JSON response for clarity
+      return res.status(404).json({ error: 'Movie not found' });
     }
-    
+
     res.json(rows[0]);
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching movie details:', err);
     res.status(500).json({ message: 'Error fetching movie', error: err.message });
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
   }
 });
 app.get('/movie-genres', async (req, res) => {

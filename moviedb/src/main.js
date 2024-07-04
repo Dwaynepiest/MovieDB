@@ -27,7 +27,7 @@ const router = createRouter({
     { path: '/settings', component: Settings },
     { path: '/register', component: Register },
     { path: '/movie-type/:type', component: MovieTypePage, props: true },
-    { path: '/movie/:type', component: MoviePage, props: true },
+    { path: '/movies/:type', component: MoviePage, props: true },
     { path: '/', redirect: '/login' },
     { path: '/login', component: Login, meta: { requiresGuest: true } },
     { path: '/profile', component: Profile, meta: { requiresAuth: true } },
