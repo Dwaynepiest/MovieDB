@@ -48,7 +48,7 @@ export default {
     }
   },
 
-  // Define component methods
+  // Define component methodss
   methods: {
     // Fetch user data from session storage
     fetchUserData() {
