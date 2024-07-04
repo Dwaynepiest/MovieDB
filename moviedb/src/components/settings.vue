@@ -43,13 +43,15 @@ export default {
   },
   methods: {
     saveUrls() {
-      this.$emit('save-urls', {
+      const urls = {
         genresUrl: this.genresUrl,
         movietypesUrl: this.movietypesUrl,
         favoritesUrl: this.favoritesUrl,
         allMoviesUrl: this.allMoviesUrl,
         movieUrl: this.movieUrl,
-      });
+      };
+      console.log('Saving URLs:', urls);
+      this.$emit('save-urls', urls);
     },
   },
 };
