@@ -1,83 +1,88 @@
 <template>
-    <div class="container">
-      <div class="content">
-        <div class="login-container">
-          <h1>Login</h1>
-          <form @submit.prevent="login" class="login-form">
-            <div class="form-group">
-              <label for="email">Email:</label> <br>
-              <input type="email" id="email" v-model="email" placeholder="Enter your email" required />
-            </div>
-            <div class="form-group">
-              <label for="password">Password:</label> <br>
-              <input type="password" id="password" v-model="password" placeholder="Enter your password" required />
-            </div>
-            <button type="submit">Login</button>
-            <router-link to="/register" class="register-link">Register</router-link>
-          </form>
-          <p v-if="error" class="error-message">{{ error }}</p>
-        </div>
+  <div class="container">
+    <div class="content">
+      <div class="login-container">
+        <h1>Login</h1>
+        <form @submit.prevent="login" class="login-form">
+          <div class="form-group">
+            <label for="email">Email:</label> <br>
+            <input type="email" id="email" v-model="email" placeholder="Enter your email" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Password:</label> <br>
+            <input type="password" id="password" v-model="password" placeholder="Enter your password" required />
+          </div>
+          <button type="submit">Login</button>
+          <router-link to="/register" class="register-link">Register</router-link>
+        </form>
+        <p v-if="error" class="error-message">{{ error }}</p>
       </div>
     </div>
+  </div>
 </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        users: [],
-        email: '',
-        password: '',
-        error: ''
-      };
-    },
-    mounted() {
-      this.fetchUsers();
-    },
-    methods: {
-      fetchUsers() {
-        axios.get('http://localhost:3000/users')
-          .then(response => {
-            this.users = response.data;
-          })
-          .catch(error => {
-            console.error("Failed to fetch users!", error);
-          });
-      },
-      login() {
-        axios.get('http://localhost:3000/users', {
-          params: {
-            email: this.email,
-            password: this.password
-          }
-        })
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      users: [],     // Holds the list of users fetched from the server
+      email: '',     // Two-way binding with the email input field
+      password: '',  // Two-way binding with the password input field
+      error: ''      // Holds any error message to be displayed
+    };
+  },
+  mounted() {
+    // Fetch the list of users when the component is mounted
+    this.fetchUsers();
+  },
+  methods: {
+    // Fetches users from the server
+    fetchUsers() {
+      axios.get('http://localhost:3000/users')
         .then(response => {
-          const user = response.data.find(u => u.email === this.email);
-          const pw = response.data.find(u => u.password === this.password);
-          if (!user) {
-            throw new Error('User not found');
-          }
-          if (!pw) {
-            throw new Error('Incorrect password');
-          }
-          // Store user data in session storage
-          sessionStorage.setItem('loggedInUser', JSON.stringify(user));
-          console.log("Login successful!", user);
-          // Redirect or perform other actions upon successful login
-          this.$router.push('/');
+          this.users = response.data; // Store the fetched users in the data property
         })
         .catch(error => {
-          this.error = error.message || 'Login Failed'; // Set the error message
+          console.error("Failed to fetch users!", error);
         });
-      }
+    },
+    // Handles the login process
+    login() {
+      axios.get('http://localhost:3000/users', {
+        params: {
+          email: this.email,
+          password: this.password
+        }
+      })
+      .then(response => {
+        // Check if the user exists and the password matches
+        const user = response.data.find(u => u.email === this.email);
+        const pw = response.data.find(u => u.password === this.password);
+        if (!user) {
+          throw new Error('User not found');
+        }
+        if (!pw) {
+          throw new Error('Incorrect password');
+        }
+        // Store user data in session storage
+        sessionStorage.setItem('loggedInUser', JSON.stringify(user));
+        console.log("Login successful!", user);
+        // Redirect or perform other actions upon successful login
+        this.$router.push('/');
+      })
+      .catch(error => {
+        this.error = error.message || 'Login Failed'; // Set the error message
+      });
     }
-  };
-  </script>
-  
-  <style scoped>
-  .container {
+  }
+};
+</script>
+
+<style scoped>
+/* Styles for the container holding the entire login page */
+.container {
   position: relative;
   z-index: 1;
   height: 100vh;
@@ -95,53 +100,62 @@
   display: none; /* Chrome, Safari, Opera */
 }
 
+/* Styles for the content within the container */
 .content {
   width: 202vh;
   padding: 0% 5% 4% 5%;
 }
 
-  .login-container {
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-    border-radius: 20px;
-    background-color: rgba(0, 0, 0, 0.8);
-    align-items: center;
-    margin-top: 10%;
-  }
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .login-form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-group {
-    margin-bottom: 10px;
-  }
-  
-  label {
-    font-weight: bold;
-  }
-  
-  input[type="email"],
-  input[type="password"] {
-    width: 80%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  button:hover {
-    background-color: #040405;
-  }
+/* Styles for the login form container */
+.login-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.8);
+  align-items: center;
+  margin-top: 10%;
+}
 
-  .register-link {
+/* Styles for the login form title */
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Styles for the login form itself */
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Styles for form groups within the login form */
+.form-group {
+  margin-bottom: 10px;
+}
+
+/* Styles for labels within the login form */
+label {
+  font-weight: bold;
+}
+
+/* Styles for email and password input fields */
+input[type="email"],
+input[type="password"] {
+  width: 80%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Hover effect for the login button */
+button:hover {
+  background-color: #040405;
+}
+
+/* Styles for the register link */
+.register-link {
   text-align: center;
   justify-content: center;
   margin-top: 1%;
@@ -154,21 +168,24 @@
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;  }
-  
-  .register-link:hover {
+  transition: border-color 0.25s;
+}
+
+/* Hover effect for the register link */
+.register-link:hover {
   border-color: #646cff;
 }
+
+/* Focus effect for the register link */
 .register-link:focus,
 .register-link:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-.card
-  
-  .error-message {
-    color: red;
-    text-align: center;
-    margin-top: 10px;
-  }
-  </style>
+/* Styles for the error message */
+.error-message {
+  color: red;
+  text-align: center;
+  margin-top: 10px;
+}
+</style>
