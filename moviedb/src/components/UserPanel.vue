@@ -101,39 +101,43 @@ export default {
 <template>
       <div class="container">
         <div class="content">
-  <div>
+  <div class="panel">
+    <div>
     <h1>User Panel</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Email</th>
-          <th>Password</th>
-          <th>Created At</th>
-          <th>Actions</th>
-          
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="user in users" :key="user.id">
-          <td>{{ user.id }}</td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.password }}</td>
-          <td>
-            <div>
-              <span>Date: {{ formattedDate(user.created_at) }}</span>
-              <br>
-              <span>Time: {{ formattedTime(user.created_at) }}</span>
-            </div>
-          </td>
-          <td>
-            <button @click="editUser(user)" >Edit</button>
-            <button @click="showDeleteConfirmation(user)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <button @click="showAddUserForm = true"style="margin-left: 85%">Add User</button>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Created At</th>
+            <th>Actions</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="user in users" :key="user.id">
+            <td>{{ user.id }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.password }}</td>
+            <td>
+              <div>
+                <span>Date: {{ formattedDate(user.created_at) }}</span>
+                <br>
+                <span>Time: {{ formattedTime(user.created_at) }}</span>
+              </div>
+            </td>
+            <td>
+              <button @click="editUser(user)" >Edit</button>
+              <button @click="showDeleteConfirmation(user)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  </div>
+    <button @click="showAddUserForm = true"style="float: right; margin-right: 2%;">Add User</button>
+  </div>
 
     <!-- Add user form modal -->
     <div v-if="showAddUserForm" class="modal">
@@ -201,8 +205,28 @@ export default {
 </template>
 
 <style scoped>
+.scroll {
+  /* background-color: pink; */
+  height: 550px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.panel {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 20px;
+  padding: 10px;
+  margin-top: 3%;
+  height: 750px;
+}
+
 table {
-  margin-left:10%;
+  /* margin-left:10%; */
   border-collapse: collapse;
   width: 80%;
 }
@@ -233,7 +257,7 @@ button {
 }
 
 .modal-content {
-  background-color: #242424;
+  background-color: rgba(0, 0, 0, 0.8);
   margin: 5% auto;
   padding: 20px;
   border: 1px solid #888;
@@ -241,6 +265,7 @@ button {
   max-width: 400px;
   position: relative;
   text-align: center;
+  border-radius: 20px;
 }
 
 .close {
