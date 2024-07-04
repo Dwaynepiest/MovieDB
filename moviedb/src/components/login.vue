@@ -1,33 +1,25 @@
 <template>
-      <div class="container">
-        <div class="content">
-    <div class="login-container">
-      <h1>Login</h1>
-      <form @submit.prevent="login" class="login-form">
-        <div class="form-group">
-          <label for="email">Email:</label>
-          <input type="email" id="email" v-model="email" placeholder="Enter your email" required />
+    <div class="container">
+      <div class="content">
+        <div class="login-container">
+          <h1>Login</h1>
+          <form @submit.prevent="login" class="login-form">
+            <div class="form-group">
+              <label for="email">Email:</label> <br>
+              <input type="email" id="email" v-model="email" placeholder="Enter your email" required />
+            </div>
+            <div class="form-group">
+              <label for="password">Password:</label> <br>
+              <input type="password" id="password" v-model="password" placeholder="Enter your password" required />
+            </div>
+            <button type="submit">Login</button>
+            <router-link to="/register" class="register-link">Register</router-link>
+          </form>
+          <p v-if="error" class="error-message">{{ error }}</p>
         </div>
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input type="password" id="password" v-model="password" placeholder="Enter your password" required />
-        </div>
-        <button type="submit">Login</button>
-        <router-link to="/register" class="register-link">Register</router-link>
-      </form>
-      <p v-if="error" class="error-message">{{ error }}</p>
-      <ul v-if="users.length > 0" class="user-list">
-        <li v-for="user in users" :key="user.id" class="user-item">
-          <p><strong>ID:</strong> {{ user.id }}</p>
-          <p><strong>Email:</strong> {{ user.email }}</p>
-          <p><strong>Password:</strong> {{ user.password }}</p>
-        </li>
-      </ul>
-      <p v-else class="no-users">No users found.</p>
+      </div>
     </div>
-  </div>
-</div>
-  </template>
+</template>
   
   <script>
   import axios from 'axios';
@@ -112,7 +104,10 @@
     max-width: 400px;
     margin: auto;
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    align-items: center;
+    margin-top: 10%;
   }
   
   h1 {
@@ -135,7 +130,7 @@
   
   input[type="email"],
   input[type="password"] {
-    width: 100%;
+    width: 80%;
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
