@@ -6,24 +6,27 @@ import axios from 'axios';
 const genres = ref([]);
 const movies = ref([]);
 const movieGenres = ref([]);
-const searchQuery = ref('');
-const filterVisible = ref(false);
-const selectedGenre = ref('');
-const movieGenreMap = ref({});
+const searchQuery = ref(''); // Reactive variable for search query
+const filterVisible = ref(false); // Reactive variable for filter visibility
+const selectedGenre = ref(''); // Reactive variable for selected genre
+const movieGenreMap = ref({}); // Reactive variable to map movie IDs to their genres
 
 // Lifecycle hook to initialize data from the APIs on component mount
 onMounted(async () => {
     try {
+        // Fetch data from multiple endpoints concurrently
         const [genresResponse, moviesResponse, movieGenresResponse] = await Promise.all([
             axios.get('http://localhost:3000/genres'),
             axios.get('http://localhost:3000/movies'),
             axios.get('http://localhost:3000/movie-genres')
         ]);
+
+        // Store the fetched data in reactive variables
         genres.value = genresResponse.data;
         movies.value = moviesResponse.data;
         movieGenres.value = movieGenresResponse.data;
 
-        // Pre-compute the genres for each movie
+        // Pre-compute the genres for each movie and store in a map
         const genreMap = {};
         movieGenresResponse.data.forEach(mg => {
             if (!genreMap[mg.movie_id]) {
@@ -31,7 +34,6 @@ onMounted(async () => {
             }
             genreMap[mg.movie_id].push(mg.genre_id);
         });
-
         movieGenreMap.value = genreMap;
 
     } catch (error) {
@@ -51,6 +53,7 @@ const filteredMovies = computed(() => {
         const movieGenreIds = movieGenreMap.value[movie.id] || [];
         const movieGenresNames = genres.value.filter(g => movieGenreIds.includes(g.id)).map(g => g.genre);
 
+        // Check if the movie matches the selected genre
         const matchesGenre = selectedGenre.value === '' || movieGenresNames.includes(selectedGenre.value);
         return matchesSearchQuery && matchesGenre;
     });
@@ -72,6 +75,7 @@ const closeFilter = () => {
     filterVisible.value = false;
 };
 </script>
+
 
 <template>
     <!-- Search Input -->

@@ -2,17 +2,20 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
+// Define the API endpoints
 const favoritesApiUrl = "http://localhost:3000/favorites";
 const moviesApiUrl = "http://localhost:3000/movies";
 
+// Reactive references to hold data
 const favoriteMovies = ref([]);
 const movieGenres = ref({});
 const loggedInUser = ref(null);
 const allMovies = ref([]);
 const favoriteMovieIds = ref([]);
 
+// Lifecycle hook that runs when the component is mounted
 onMounted(async () => {
-  // Fetch logged-in user data from session storage
+  // Retrieve the logged-in user data from session storage
   const storedUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
   if (storedUser) {
     loggedInUser.value = storedUser;
@@ -23,9 +26,10 @@ onMounted(async () => {
   }
 });
 
+// Function to fetch favorite movies for the logged-in user
 const fetchFavoriteMovies = async () => {
   try {
-    // Fetch favorite movies for the logged-in user
+    // Fetch favorite movies data from the API
     const response = await axios.get(`${favoritesApiUrl}`, {
       params: {
         user_id: loggedInUser.value.id
@@ -33,20 +37,21 @@ const fetchFavoriteMovies = async () => {
     });
     const favoriteMoviesData = response.data;
 
-    // Filter favorite movies that belong to the logged-in user
+    // Filter and set the favorite movies belonging to the logged-in user
     favoriteMovies.value = favoriteMoviesData.filter(favorite => favorite.user_id === loggedInUser.value.id);
 
-    // Fetch all movies
+    // Fetch all movies data from the API
     const moviesResponse = await axios.get(moviesApiUrl);
     allMovies.value = moviesResponse.data;
 
-    // Filter favorite movies to show only the ones with matching IDs
+    // Filter and set the favorite movies based on the fetched movies
     favoriteMovies.value = allMovies.value.filter(movie => favoriteMovies.value.some(favorite => favorite.movie_id === movie.id));
   } catch (error) {
-    console.error('Error fetching favorite movies:', error.response? error.response.data : error);
+    console.error('Error fetching favorite movies:', error.response ? error.response.data : error);
   }
 };
 
+// Function to get movie genres as a comma-separated string
 const getMovieGenres = (movieId) => {
   if (!movieGenres.value[movieId]) return '';
   const genres = movieGenres.value[movieId].map(genreId => {
@@ -56,10 +61,13 @@ const getMovieGenres = (movieId) => {
   return genres.join(', ');
 };
 
+// Function to delete a movie from the favorite list
 const deleteFavorite = async (movieId) => {
   try {
+    // Send a delete request to the API
     const response = await axios.delete(`${favoritesApiUrl}/${loggedInUser.value.id}/${movieId}`);
     if (response.status === 204) {
+      // Remove the movie from the local favorite movies list
       favoriteMovies.value = favoriteMovies.value.filter(movie => movie.id !== movieId);
       console.log('Deleted favorite:', movieId);
     } else {
@@ -71,8 +79,8 @@ const deleteFavorite = async (movieId) => {
   }
 };
 
-
 </script>
+
 
 <template>
   <h1>Favorite Movies</h1>

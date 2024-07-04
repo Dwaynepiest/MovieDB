@@ -3,14 +3,14 @@ import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { useRouter, useRoute } from 'vue-router';
 
+// API URLs
 const movieTypesApiUrl = "http://localhost:3000/movie-types";
 const movieGenreApiUrl = "http://localhost:3000/genres";
 const moviesApiUrl = "http://localhost:3000/movies";
 const movieGenresApiUrl = "http://localhost:3000/movie-genres";
-// const favoritesApiUrl = "http://localhost:3000/favorites"; // Assuming this is your endpoint for favorites
 const favoritesApiUrl = 'http://localhost:3000/favorites';
 
-
+// Reactive variables to store data
 const movieTypes = ref([]);
 const movieGenres = ref([]);
 const genres = ref([]);
@@ -19,14 +19,15 @@ const movieGenreMap = ref({});
 const loggedInUser = ref(null); // Ref to store the logged-in user's data
 const favorites = ref([]); // Store the user's favorite movies
 
-
 // For navigation
 const router = useRouter();
 const route = useRoute();
 const movieType = route.params.type;
 
+// Lifecycle hook to fetch data when the component is mounted
 onMounted(async () => {
   try {
+    // Fetch data from multiple endpoints concurrently
     const [movieTypesResponse, genresResponse, moviesResponse, movieGenresResponse] = await Promise.all([
       axios.get(movieTypesApiUrl),
       axios.get(movieGenreApiUrl),
@@ -34,12 +35,13 @@ onMounted(async () => {
       axios.get(movieGenresApiUrl)
     ]);
 
+    // Store the fetched data in reactive variables
     movieTypes.value = movieTypesResponse.data;
     movieGenres.value = movieGenresResponse.data;
     genres.value = genresResponse.data;
     movies.value = moviesResponse.data;
 
-    // Pre-compute the genres for each movie
+    // Pre-compute the genres for each movie and store in a map
     const genreMap = {};
     movieGenresResponse.data.forEach(mg => {
       if (!genreMap[mg.movie_id]) {
@@ -63,6 +65,7 @@ onMounted(async () => {
   }
 });
 
+// Function to fetch the user's favorite movies
 const fetchFavorites = async () => {
   if (!loggedInUser.value) {
     console.error('User not logged in');
@@ -78,11 +81,13 @@ const fetchFavorites = async () => {
   }
 };
 
+// Function to get the image URL based on the movie type
 const getImageUrl = (type) => {
   if (!type) return ''; // Return an empty string or a default image path if type is undefined
   return `img/${type.toLowerCase().replace(/ /g, '_')}.jpg`;
 };
 
+// Function to filter movies by genre
 const filterMoviesByGenre = (genre) => {
   const genreObj = genres.value.find(g => g.genre === genre);
   if (!genreObj) return []; // Return an empty array if the genre is not found
@@ -90,19 +95,22 @@ const filterMoviesByGenre = (genre) => {
   return movies.value.filter(movie => movieGenreMap.value[movie.id] && movieGenreMap.value[movie.id].includes(genreId));
 };
 
-// Navigate to the movie type page
+// Function to navigate to the movie type page
 const navigateToType = (type) => {
   router.push({ path: `/movie-type/${type}` });
 };
-// Navigate to the movie page
+
+// Function to navigate to the movie page
 const navigateToMovie = (movieId) => {
   router.push({ path: `/movies/${movieId}` });
 };
+
+// Function to redirect to the login page
 const redirectToLogin = () => {
   router.push({ path: '/login' });
 };
 
-
+// Function to toggle a movie as a favorite
 const toggleFavorite = async (movieId) => {
   if (!loggedInUser.value) {
     console.error('User not logged in');
@@ -111,13 +119,16 @@ const toggleFavorite = async (movieId) => {
   }
 
   try {
+    // Check if the movie is already a favorite
     const favoriteIndex = favorites.value.findIndex(favorite => favorite.user_id === loggedInUser.value.id && favorite.movie_id === movieId);
     if (favoriteIndex !== -1) {
+      // If it's a favorite, remove it
       const favoriteId = favorites.value[favoriteIndex].id;
       await axios.delete(`${favoritesApiUrl}/${favoriteId}`);
       favorites.value.splice(favoriteIndex, 1);
       console.log('Removed from favorites', movieId);
     } else {
+      // If it's not a favorite, add it
       const favoriteData = { user_id: loggedInUser.value.id, movie_id: movieId };
       const response = await axios.post(favoritesApiUrl, favoriteData);
       favorites.value.push({...favoriteData, id: response.data.id });
@@ -128,8 +139,7 @@ const toggleFavorite = async (movieId) => {
   }
 };
 
-
-// Filtered movies for the dynamic page
+// Computed property to filter movies for the dynamic page based on the movie type
 const filteredMovies = computed(() => {
   if (!movieType) return [];
   const genreObj = genres.value.find(g => g.genre === movieType);
@@ -141,11 +151,13 @@ const filteredMovies = computed(() => {
   });
 });
 
+// Function to check if a movie is a favorite
 const isFavorite = (movieId) => {
   return favorites.value.some(favorite => favorite.movie_id === movieId);
 };
 
 </script>
+
 
 <template>
   <div class="container">

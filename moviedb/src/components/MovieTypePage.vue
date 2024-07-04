@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router';
 
 // Use route to get movie type from URL
 const route = useRoute();
-const movieType = route.params.type;
+const movieType = route.params.type; // Get the movie type from the URL parameter
 
 // API URLs
 const moviesApiUrl = "http://localhost:3000/movies";
@@ -14,14 +14,15 @@ const movieGenresApiUrl = "http://localhost:3000/movie-genres";
 const genresApiUrl = "http://localhost:3000/genres";
 
 // Refs for storing data
-const movies = ref([]);
-const movieTypes = ref([]);
-const movieGenres = ref([]);
-const genres = ref([]);
+const movies = ref([]); // Array to store movies
+const movieTypes = ref([]); // Array to store movie types
+const movieGenres = ref([]); // Array to store movie genres
+const genres = ref([]); // Array to store genres
 
 // Fetch data on component mount
 onMounted(async () => {
     try {
+        // Fetch data from multiple endpoints concurrently
         const [moviesResponse, movieTypesResponse, movieGenresResponse, genresResponse] = await Promise.all([
             axios.get(moviesApiUrl),
             axios.get(movieTypesApiUrl),
@@ -29,6 +30,7 @@ onMounted(async () => {
             axios.get(genresApiUrl),
         ]);
 
+        // Store fetched data in reactive variables
         movies.value = moviesResponse.data;
         movieTypes.value = movieTypesResponse.data;
         movieGenres.value = movieGenresResponse.data;
@@ -40,19 +42,22 @@ onMounted(async () => {
 
 // Computed property to filter movies based on type
 const filteredMovies = computed(() => {
+    // Find the movie type object that matches the current movieType parameter
     const typeObj = movieTypes.value.find(t => t.movie_type === movieType);
-    if (!typeObj) return [];
-    const typeId = typeObj.id;
+    if (!typeObj) return []; // Return empty array if no matching type found
+    const typeId = typeObj.id; // Get the ID of the found movie type
 
+    // Filter movies based on the found type ID
     return movies.value.filter(movie => movie.movie_type === typeId);
 });
 
-// Function to get image URL
+// Function to get image URL based on movie title
 const getImageUrl = (title) => {
-    if (!title) return '';
-    return `img/${title.toLowerCase().replace(/ /g, '_')}.jpg`;
+    if (!title) return ''; // Return empty string if title is not provided
+    return `img/${title.toLowerCase().replace(/ /g, '_')}.jpg`; // Generate and return image URL
 };
 </script>
+
 
 <template>
     <div class="container">
