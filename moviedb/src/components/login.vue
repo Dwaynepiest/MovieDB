@@ -30,7 +30,7 @@ export default {
       users: [],     // Holds the list of users fetched from the server
       email: '',     // Two-way binding with the email input field
       password: '',  // Two-way binding with the password input field
-      error: ''      // Holds any error message to be displayed
+      error: ''      // Holds any error message to be displayeds
     };
   },
   mounted() {
